@@ -1,7 +1,4 @@
 {
     "name": "work",
-    "description": "jallo beats collar and me -3474",
-    "script": {
-        "build":"npm run build --prefix client"
-    }
+    "description": "jallo beats collar and me -3474"
 }
