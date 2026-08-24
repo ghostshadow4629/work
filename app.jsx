@@ -1,1524 +1,1347 @@
-* {
-  box-sizing: border-box;
-}
-
-html,
-body,
-#root {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
-}
-
-body {
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Arial,
-    sans-serif;
-
-  color: #eaf7ff;
-
-  background:
-    radial-gradient(
-      circle at 50% 40%,
-      rgba(0, 100, 255, 0.12),
-      transparent 45%
-    ),
-    #020711;
-
-  overflow: auto;
-
-  -webkit-overflow-scrolling: touch;
-}
-
-button,
-input {
-  font-family: inherit;
-}
-
-
-/* =========================================================
-   MAIN
-========================================================= */
-
-.assistant {
-  position: relative;
-
-  width: 100%;
-
-  min-height: 100vh;
-
-  padding: 14px 14px 90px;
-
-  display: grid;
-
-  grid-template-columns:
-    230px
-    minmax(420px, 1fr)
-    minmax(420px, 1fr);
-
-  gap: 14px;
-
-  overflow-x: auto;
-  overflow-y: visible;
-}
-
-
-/* =========================================================
-   SIDEBAR
-========================================================= */
-
-.sidebar {
-  width: 230px;
-  min-width: 230px;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 14px;
-}
-
-.brand {
-  height: 80px;
-
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-}
-
-.brandIcon {
-  width: 48px;
-  height: 48px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 2px solid #00aaff;
-
-  border-radius: 14px;
-
-  background:
-    rgba(0, 130, 255, 0.08);
-
-  box-shadow:
-    0 0 18px rgba(0, 150, 255, 0.4);
-}
-
-.brandSymbol {
-  color: #43d9ff;
-
-  font-size: 17px;
-  font-weight: bold;
-
-  text-shadow:
-    0 0 12px #00cfff;
-}
-
-.brand h1 {
-  margin: 0;
-
-  font-size: 17px;
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.brand p {
-  margin: 5px 0 0;
-
-  color: #7387a9;
-
-  font-size: 11px;
-}
-
-
-/* =========================================================
-   SIDEBAR NAV
-========================================================= */
-
-.sideNavigation {
-  overflow: hidden;
-
-  border:
-    1px solid rgba(0, 140, 255, 0.3);
-
-  border-radius: 15px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(7, 24, 48, 0.92),
-      rgba(2, 11, 25, 0.92)
-    );
-}
-
-.navButton {
-  position: relative;
-
-  width: 100%;
-  height: 68px;
-
-  display: flex;
-  align-items: center;
-
-  gap: 15px;
-
-  padding: 0 18px;
-
-  border: 0;
-
-  border-bottom:
-    1px solid rgba(90, 140, 200, 0.1);
-
-  background: transparent;
-
-  color: #91a5c7;
-
-  font-size: 15px;
-
-  text-align: left;
-
-  cursor: pointer;
-}
-
-.navButton:last-child {
-  border-bottom: 0;
-}
-
-.navButton:hover {
-  color: white;
-
-  background:
-    rgba(0, 130, 255, 0.08);
-}
-
-.navButton.active {
-  color: white;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(0, 130, 255, 0.3),
-      rgba(0, 110, 255, 0.06)
-    );
-
-  box-shadow:
-    inset 3px 0 0 #00baff;
-}
-
-.navIcon {
-  width: 28px;
-
-  color: #55cfff;
-
-  font-size: 12px;
-  font-weight: bold;
-
-  text-align: center;
-}
-
-
-/* =========================================================
-   SIDEBAR CARDS
-========================================================= */
-
-.sideCard {
-  padding: 15px;
-
-  border:
-    1px solid rgba(0, 135, 255, 0.28);
-
-  border-radius: 14px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(5, 22, 44, 0.85),
-      rgba(2, 11, 24, 0.85)
-    );
-}
-
-.cardTitle {
-  display: block;
-
-  margin-bottom: 9px;
-
-  color: #7388aa;
-
-  font-size: 11px;
-}
-
-.online {
-  color: #18ff99;
-
-  font-size: 19px;
-
-  font-weight: 600;
-
-  text-shadow:
-    0 0 12px rgba(0, 255, 150, 0.4);
-}
-
-.connected {
-  display: flex;
-
-  align-items: center;
-
-  gap: 7px;
-
-  margin-top: 6px;
-
-  color: #8498b7;
-
-  font-size: 11px;
-}
-
-.connected span {
-  width: 7px;
-  height: 7px;
-
-  border-radius: 50%;
-
-  background: #19ff9b;
-
-  box-shadow:
-    0 0 10px #19ff9b;
-}
-
-.mood {
-  color: #d35cff;
-
-  font-size: 18px;
-
-  text-shadow:
-    0 0 12px rgba(210, 70, 255, 0.45);
-}
-
-
-/* =========================================================
-   WAVE
-========================================================= */
-
-.moodWave {
-  height: 28px;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 4px;
-
-  overflow: hidden;
-}
-
-.moodWave span {
-  width: 26px;
-  height: 2px;
-
-  background: #c151ff;
-
-  box-shadow:
-    0 0 8px #c151ff;
-}
-
-
-/* =========================================================
-   NEW CHAT
-========================================================= */
-
-.newConversation {
-  height: 58px;
-
-  border:
-    1px solid rgba(0, 145, 255, 0.4);
-
-  border-radius: 13px;
-
-  background:
-    rgba(0, 100, 255, 0.07);
-
-  color: #b7d1f4;
-
-  font-size: 14px;
-
-  cursor: pointer;
-}
-
-.newConversation:hover {
-  background:
-    rgba(0, 130, 255, 0.14);
-}
-
-
-/* =========================================================
-   AI DISPLAY
-========================================================= */
-
-.mainDisplay {
-  position: relative;
-
-  min-width: 420px;
-
-  min-height: calc(100vh - 105px);
-
-  padding: 20px;
-
-  border:
-    1px solid rgba(0, 160, 255, 0.55);
-
-  border-radius: 20px;
-
-  background:
-    radial-gradient(
-      circle at 50% 35%,
-      rgba(0, 115, 255, 0.12),
-      transparent 50%
-    ),
-    linear-gradient(
-      145deg,
-      rgba(5, 19, 39, 0.96),
-      rgba(1, 9, 22, 0.96)
-    );
-
-  box-shadow:
-    0 0 30px rgba(0, 130, 255, 0.1);
-
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  -webkit-overflow-scrolling: touch;
-}
-
-.panelTitle {
-  height: 38px;
-
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  color: #52d8ff;
-
-  font-size: 16px;
-}
-
-.titleLine {
-  flex: 1;
-
-  height: 1px;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(0, 180, 255, 0.5),
-      transparent
-    );
-}
-
-
-/* =========================================================
-   ROBOT
-========================================================= */
-
-.robotArea {
-  position: relative;
-
-  height: 500px;
-
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-}
-
-.robot {
-  position: relative;
-
-  z-index: 5;
-
-  animation:
-    robotFloat 4s ease-in-out infinite;
-}
-
-@keyframes robotFloat {
-  0%,
-  100% {
-    transform: translateY(0);
+import React, { useEffect, useRef, useState } from "react";
+import "./App.css";
+
+const initialMessages = [
+  {
+    id: 1,
+    sender: "ai",
+    text: "Hello. I am your AI Assistant. Ask me anything and I will do my best to help.",
+  },
+];
+
+const knowledgeItems = [
+  {
+    title: "React",
+    text: "React is a JavaScript library used to build interactive user interfaces from components.",
+  },
+  {
+    title: "Python",
+    text: "Python is a programming language commonly used for automation, applications, games, data and AI.",
+  },
+  {
+    title: "Artificial Intelligence",
+    text: "Artificial intelligence allows computer systems to perform tasks that normally require human-like reasoning or pattern recognition.",
+  },
+  {
+    title: "Robotics",
+    text: "Robotics combines programming, electronics and mechanical systems to create machines that can sense and perform actions.",
+  },
+  {
+    title: "JavaScript",
+    text: "JavaScript is a programming language commonly used to make websites and web applications interactive.",
+  },
+];
+
+function getLocalAnswer(question) {
+  const q = question.toLowerCase().trim();
+
+  if (!q) {
+    return "Please type a question first.";
   }
 
-  50% {
-    transform: translateY(-7px);
+  if (
+    q.includes("hello") ||
+    q.includes("hi") ||
+    q.includes("hey")
+  ) {
+    return "Hello. All systems are online. What would you like to work on?";
   }
+
+  if (
+    q.includes("your name") ||
+    q.includes("who are you")
+  ) {
+    return "I am your AI Assistant. I am currently running through your React interface.";
+  }
+
+  if (q.includes("react")) {
+    return `React is used to build interactive websites and applications.
+
+React applications are built from components.
+
+For example:
+
+function App() {
+  return <h1>Hello World</h1>;
 }
 
-.robotHead {
-  position: relative;
+You can combine many components to create a complete application.`;
+  }
 
-  width: 270px;
-  height: 240px;
+  if (q.includes("python")) {
+    return `Python is a programming language that can be used for applications, automation, games and AI.
 
-  border-radius: 33%;
+Example:
 
-  background:
-    linear-gradient(
-      145deg,
-      #152541,
-      #030a18 55%,
-      #0d1b32
+name = "AI Assistant"
+print("Hello " + name)
+
+Python can also be used to create a backend for your React application.`;
+  }
+
+  if (
+    q.includes("robot") ||
+    q.includes("robot arm")
+  ) {
+    return `A robot arm normally uses motors or servos to control its joints.
+
+A basic robot arm system can contain:
+
+1. A controller
+2. Motors or servos
+3. A power supply
+4. Wiring
+5. Software
+
+The exact components depend on the robot arm you are building.`;
+  }
+
+  if (q.includes("javascript")) {
+    return `JavaScript is the programming language used by React.
+
+It allows your application to:
+- Respond to button clicks
+- Change the screen
+- Store information
+- Send requests to servers
+- Create animations
+- Communicate with APIs`;
+  }
+
+  if (q.includes("ai")) {
+    return `An AI assistant normally has three major parts:
+
+1. Frontend
+The React application that the user interacts with.
+
+2. Backend
+The server that receives messages.
+
+3. AI model
+The system that generates the answer.
+
+Your current React interface is the frontend.`;
+  }
+
+  if (q.includes("how are you")) {
+    return "All systems are online and ready.";
+  }
+
+  return `I received your question:
+
+"${question}"
+
+The React interface is working correctly. For unrestricted AI answers, connect the /api/chat endpoint to your AI backend.`;
+}
+
+export default function App() {
+  const [activePage, setActivePage] = useState("Chat");
+
+  const [messages, setMessages] =
+    useState(initialMessages);
+
+  const [message, setMessage] = useState("");
+
+  const [isThinking, setIsThinking] =
+    useState(false);
+
+  const [processing, setProcessing] =
+    useState(100);
+
+  const [memory, setMemory] =
+    useState([]);
+
+  const [memoryEnabled, setMemoryEnabled] =
+    useState(true);
+
+  const [voiceEnabled, setVoiceEnabled] =
+    useState(false);
+
+  const [notifications, setNotifications] =
+    useState(true);
+
+  const [autoScroll, setAutoScroll] =
+    useState(true);
+
+  const [theme, setTheme] =
+    useState("dark");
+
+  const [knowledgeSearch, setKnowledgeSearch] =
+    useState("");
+
+  const messagesRef = useRef(null);
+
+  useEffect(() => {
+    if (
+      autoScroll &&
+      messagesRef.current
+    ) {
+      messagesRef.current.scrollTop =
+        messagesRef.current.scrollHeight;
+    }
+  }, [
+    messages,
+    isThinking,
+    autoScroll,
+  ]);
+
+  useEffect(() => {
+    document.body.className =
+      theme === "light"
+        ? "lightTheme"
+        : "";
+  }, [theme]);
+
+  useEffect(() => {
+    if (!isThinking) {
+      setProcessing(100);
+      return;
+    }
+
+    let value = 25;
+
+    const interval = setInterval(() => {
+      value += Math.floor(
+        Math.random() * 10
+      ) + 5;
+
+      if (value >= 96) {
+        value = 96;
+      }
+
+      setProcessing(value);
+    }, 250);
+
+    return () => clearInterval(interval);
+  }, [isThinking]);
+
+  function changePage(page) {
+    setActivePage(page);
+  }
+
+  function clearChat() {
+    setMessages([]);
+
+    if (notifications) {
+      console.log("Chat cleared");
+    }
+  }
+
+  function newConversation() {
+    setMessages([
+      {
+        id: Date.now(),
+        sender: "ai",
+        text: "New conversation started. What would you like to ask?",
+      },
+    ]);
+
+    setActivePage("Chat");
+  }
+
+  function clearMemory() {
+    setMemory([]);
+  }
+
+  function speak(text) {
+    if (
+      !voiceEnabled ||
+      !window.speechSynthesis
+    ) {
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const speech =
+      new SpeechSynthesisUtterance(text);
+
+    speech.rate = 1;
+    speech.pitch = 1;
+
+    window.speechSynthesis.speak(
+      speech
+    );
+  }
+
+  async function askAI() {
+    const question = message.trim();
+
+    if (!question || isThinking) {
+      return;
+    }
+
+    const userMessage = {
+      id: Date.now(),
+      sender: "user",
+      text: question,
+    };
+
+    setMessages((previous) => [
+      ...previous,
+      userMessage,
+    ]);
+
+    if (memoryEnabled) {
+      setMemory((previous) => [
+        ...previous,
+        {
+          id: Date.now(),
+          text: question,
+          time: new Date().toLocaleString(),
+        },
+      ]);
+    }
+
+    setMessage("");
+    setIsThinking(true);
+
+    try {
+      const response = await fetch(
+        "/api/chat",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            message: question,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          "Backend unavailable"
+        );
+      }
+
+      const data =
+        await response.json();
+
+      const answer =
+        data.answer ||
+        data.message ||
+        data.response ||
+        getLocalAnswer(question);
+
+      setMessages((previous) => [
+        ...previous,
+        {
+          id: Date.now() + 1,
+          sender: "ai",
+          text: answer,
+        },
+      ]);
+
+      speak(answer);
+    } catch (error) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, 700)
+      );
+
+      const answer =
+        getLocalAnswer(question);
+
+      setMessages((previous) => [
+        ...previous,
+        {
+          id: Date.now() + 1,
+          sender: "ai",
+          text: answer,
+        },
+      ]);
+
+      speak(answer);
+    }
+
+    setIsThinking(false);
+  }
+
+  function handleKeyDown(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      askAI();
+    }
+  }
+
+  function toggleVoice() {
+    if (voiceEnabled) {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+
+      setVoiceEnabled(false);
+    } else {
+      setVoiceEnabled(true);
+    }
+  }
+
+  const filteredKnowledge =
+    knowledgeItems.filter((item) =>
+      item.title
+        .toLowerCase()
+        .includes(
+          knowledgeSearch.toLowerCase()
+        )
     );
 
-  border:
-    2px solid #009eff;
+  return (
+    <div
+      className={
+        "assistant " +
+        (theme === "light"
+          ? "lightAssistant"
+          : "")
+      }
+    >
+
+      {/* SIDEBAR */}
+
+      <aside className="sidebar">
+
+        <div className="brand">
+
+          <div className="brandIcon">
+            <div className="brandSymbol">
+              AI
+            </div>
+          </div>
+
+          <div>
+            <h1>MY AI ASSISTANT</h1>
+            <p>Your Personal AI</p>
+          </div>
+
+        </div>
+
+
+        <div className="sideNavigation">
+
+          <button
+            className={
+              "navButton " +
+              (activePage === "Chat"
+                ? "active"
+                : "")
+            }
+            onClick={() =>
+              changePage("Chat")
+            }
+          >
+            <span className="navIcon">
+              []
+            </span>
+            Chat
+          </button>
+
+
+          <button
+            className={
+              "navButton " +
+              (activePage === "Memory"
+                ? "active"
+                : "")
+            }
+            onClick={() =>
+              changePage("Memory")
+            }
+          >
+            <span className="navIcon">
+              M
+            </span>
+            Memory
+          </button>
+
+
+          <button
+            className={
+              "navButton " +
+              (activePage === "Knowledge"
+                ? "active"
+                : "")
+            }
+            onClick={() =>
+              changePage("Knowledge")
+            }
+          >
+            <span className="navIcon">
+              K
+            </span>
+            Knowledge
+          </button>
+
+
+          <button
+            className={
+              "navButton " +
+              (activePage === "Voice"
+                ? "active"
+                : "")
+            }
+            onClick={() =>
+              changePage("Voice")
+            }
+          >
+            <span className="navIcon">
+              V
+            </span>
+            Voice
+          </button>
 
-  box-shadow:
-    0 0 25px rgba(0, 160, 255, 0.55),
-    inset 0 0 35px rgba(0, 120, 255, 0.15);
-}
 
-.robotScreen {
-  position: absolute;
+          <button
+            className={
+              "navButton " +
+              (activePage === "Settings"
+                ? "active"
+                : "")
+            }
+            onClick={() =>
+              changePage("Settings")
+            }
+          >
+            <span className="navIcon">
+              S
+            </span>
+            Settings
+          </button>
 
-  left: 30px;
-  right: 30px;
+        </div>
 
-  top: 28px;
-  bottom: 26px;
 
-  display: flex;
-  flex-direction: column;
+        <div className="sideCard">
 
-  align-items: center;
-  justify-content: center;
+          <span className="cardTitle">
+            AI STATUS
+          </span>
 
-  border-radius: 28%;
+          <div className="online">
+            ONLINE
+          </div>
 
-  background:
-    radial-gradient(
-      circle,
-      rgba(0, 130, 255, 0.16),
-      rgba(0, 0, 0, 0.4)
-    );
+          <div className="connected">
+            <span></span>
+            Connected
+          </div>
 
-  overflow: hidden;
-}
+        </div>
 
-.robotScreen::before {
-  content: "";
 
-  position: absolute;
+        <div className="sideCard">
 
-  inset: 0;
+          <span className="cardTitle">
+            AI MOOD
+          </span>
 
-  background:
-    radial-gradient(
-      circle,
-      rgba(0, 190, 255, 0.18) 1px,
-      transparent 1.5px
-    );
+          <div className="mood">
+            CURIOUS
+          </div>
 
-  background-size: 7px 7px;
-}
+          <div className="moodWave">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
 
-.robotEyes {
-  position: relative;
+        </div>
 
-  z-index: 2;
 
-  display: flex;
+        <button
+          className="newConversation"
+          onClick={newConversation}
+        >
+          + New Conversation
+        </button>
 
-  gap: 50px;
-}
+      </aside>
 
-.robotEye {
-  width: 38px;
-  height: 58px;
 
-  border-radius: 50%;
+      {/* MAIN CONTENT */}
 
-  background: #43ddff;
+      {activePage === "Chat" && (
 
-  box-shadow:
-    0 0 15px #00caff,
-    0 0 35px rgba(0, 190, 255, 0.75);
+        <main className="mainDisplay">
 
-  animation:
-    eyeGlow 2s infinite;
-}
+          <div className="panelTitle">
+            AI DISPLAY
+            <span className="titleLine"></span>
+          </div>
 
-@keyframes eyeGlow {
-  50% {
-    box-shadow:
-      0 0 20px #00d9ff,
-      0 0 50px rgba(0, 190, 255, 0.9);
-  }
-}
 
-.robotSmile {
-  position: relative;
+          <div className="robotArea">
 
-  z-index: 2;
+            <div className="orbit orbit1"></div>
+            <div className="orbit orbit2"></div>
+            <div className="orbit orbit3"></div>
 
-  width: 58px;
-  height: 25px;
 
-  margin-top: 20px;
+            <div className="robot">
 
-  border-bottom:
-    6px solid #48ddff;
+              <div className="robotSide leftSide"></div>
+              <div className="robotSide rightSide"></div>
 
-  border-radius: 50%;
+              <div className="robotHead">
 
-  filter:
-    drop-shadow(0 0 8px #00cfff);
-}
+                <div className="robotScreen">
 
+                  <div className="robotEyes">
 
-/* =========================================================
-   ROBOT SIDES
-========================================================= */
+                    <div className="robotEye"></div>
+                    <div className="robotEye"></div>
 
-.robotSide {
-  position: absolute;
+                  </div>
 
-  top: 65px;
+                  <div className="robotSmile"></div>
 
-  width: 30px;
-  height: 105px;
+                </div>
 
-  border:
-    2px solid #009eff;
+              </div>
 
-  background:
-    rgba(0, 130, 255, 0.08);
 
-  box-shadow:
-    0 0 15px rgba(0, 150, 255, 0.45);
-}
+              <div className="robotNeck"></div>
 
-.leftSide {
-  left: -24px;
+              <div className="robotBody">
 
-  border-radius:
-    14px 0 0 14px;
-}
+                <div className="bodyLight"></div>
+                <div className="bodyLight"></div>
+                <div className="bodyLight"></div>
 
-.rightSide {
-  right: -24px;
+              </div>
 
-  border-radius:
-    0 14px 14px 0;
-}
+            </div>
 
-.robotNeck {
-  width: 70px;
-  height: 28px;
 
-  margin: -3px auto 0;
+            <div className="thinkingLabel">
+              {isThinking
+                ? "AI IS THINKING..."
+                : "AI IS READY"}
+            </div>
 
-  border:
-    1px solid #008bdc;
 
-  background: #071428;
-}
+            <div className="waveform">
 
-.robotBody {
-  width: 230px;
-  height: 70px;
+              {Array.from(
+                { length: 32 },
+                (_, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      height:
+                        `${8 + ((index * 17) % 42)}px`,
+                    }}
+                  />
+                )
+              )}
 
-  margin: auto;
+            </div>
 
-  border:
-    1px solid #008bdc;
+          </div>
 
-  border-radius:
-    22px 22px 8px 8px;
 
-  background: #071427;
+          <div className="processingCard">
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+            <div className="processingHeader">
 
-  gap: 12px;
-}
+              <span>
+                PROCESSING
+              </span>
 
-.bodyLight {
-  width: 35px;
-  height: 5px;
+              <strong>
+                {processing}%
+              </strong>
 
-  background: #00cfff;
+            </div>
 
-  box-shadow:
-    0 0 12px #00cfff;
-}
+            <div className="processingBar">
 
+              <div
+                className="processingProgress"
+                style={{
+                  width:
+                    `${processing}%`,
+                }}
+              />
 
-/* =========================================================
-   ORBITS
-========================================================= */
+            </div>
 
-.orbit {
-  position: absolute;
+          </div>
 
-  left: 50%;
-  top: 45%;
 
-  transform:
-    translate(-50%, -50%);
+          <div className="systemCards">
 
-  border-radius: 50%;
+            <div className="systemCard">
 
-  pointer-events: none;
-}
+              <div className="core">
+                <div></div>
+              </div>
 
-.orbit1 {
-  width: 410px;
-  height: 410px;
+              <div>
+                <small>
+                  NEURAL
+                </small>
 
-  border:
-    1px solid rgba(0, 160, 255, 0.28);
+                <strong>
+                  NETWORK
+                </strong>
+              </div>
 
-  animation:
-    orbitRotate 14s linear infinite;
-}
+            </div>
 
-.orbit2 {
-  width: 330px;
-  height: 330px;
 
-  border:
-    1px dashed rgba(0, 160, 255, 0.28);
+            <div className="systemCard core">
+              <div></div>
+            </div>
 
-  animation:
-    orbitRotate 9s linear infinite reverse;
-}
 
-.orbit3 {
-  width: 470px;
-  height: 470px;
+            <div className="systemCard">
 
-  border:
-    1px solid rgba(0, 110, 255, 0.1);
+              <div className="core">
+                <div></div>
+              </div>
 
-  animation:
-    orbitRotate 22s linear infinite;
-}
+              <div>
+                <small>
+                  ANALYSING
+                </small>
 
-@keyframes orbitRotate {
-  from {
-    transform:
-      translate(-50%, -50%)
-      rotate(0deg);
-  }
+                <strong>
+                  INFORMATION
+                </strong>
+              </div>
 
-  to {
-    transform:
-      translate(-50%, -50%)
-      rotate(360deg);
-  }
-}
+            </div>
 
+          </div>
 
-/* =========================================================
-   THINKING
-========================================================= */
+        </main>
 
-.thinkingLabel {
-  position: relative;
+      )}
 
-  z-index: 8;
 
-  margin-top: 18px;
+      {/* MEMORY */}
 
-  padding: 10px 38px;
+      {activePage === "Memory" && (
 
-  border:
-    1px solid #008cdb;
+        <main className="featurePage">
 
-  border-radius: 20px;
+          <div className="featureHeader">
+            <h2>MEMORY</h2>
 
-  background:
-    rgba(0, 100, 255, 0.1);
+            <button
+              onClick={clearMemory}
+            >
+              Clear Memory
+            </button>
+          </div>
 
-  color: #50d8ff;
 
-  font-size: 13px;
+          <div className="featureIntro">
+            <div className="featureIcon">
+              MEMORY
+            </div>
 
-  box-shadow:
-    0 0 20px rgba(0, 140, 255, 0.15);
-}
+            <h1>
+              Conversation Memory
+            </h1>
 
+            <p>
+              Questions saved by your AI Assistant
+              appear here.
+            </p>
+          </div>
 
-/* =========================================================
-   WAVEFORM
-========================================================= */
 
-.waveform {
-  width: 82%;
-  height: 70px;
+          <div className="memoryList">
 
-  margin-top: 10px;
+            {memory.length === 0 ? (
 
-  display: flex;
+              <div className="emptyState">
+                <strong>
+                  No memories yet
+                </strong>
 
-  align-items: center;
-  justify-content: center;
+                <p>
+                  Ask the AI a question and it
+                  can be saved here.
+                </p>
+              </div>
 
-  gap: 4px;
+            ) : (
 
-  border:
-    1px solid rgba(0, 130, 255, 0.18);
+              memory.map((item) => (
 
-  border-radius: 12px;
-}
+                <div
+                  className="memoryItem"
+                  key={item.id}
+                >
+                  <strong>
+                    {item.text}
+                  </strong>
 
-.waveform span {
-  width: 4px;
+                  <small>
+                    {item.time}
+                  </small>
+                </div>
 
-  min-height: 5px;
+              ))
 
-  background: #00c5ff;
+            )}
 
-  box-shadow:
-    0 0 8px #00bfff;
+          </div>
 
-  animation:
-    wave 1s infinite ease-in-out;
-}
+        </main>
 
-.waveform span:nth-child(2n) {
-  animation-delay: 0.15s;
-}
+      )}
 
-.waveform span:nth-child(3n) {
-  animation-delay: 0.3s;
-}
 
-@keyframes wave {
-  0%,
-  100% {
-    transform: scaleY(0.4);
-  }
+      {/* KNOWLEDGE */}
 
-  50% {
-    transform: scaleY(1.7);
-  }
-}
+      {activePage === "Knowledge" && (
 
+        <main className="featurePage">
 
-/* =========================================================
-   PROCESSING
-========================================================= */
+          <div className="featureHeader">
 
-.processingCard {
-  margin-top: 12px;
+            <h2>
+              KNOWLEDGE
+            </h2>
 
-  padding: 14px 17px;
+          </div>
 
-  border:
-    1px solid rgba(0, 130, 255, 0.25);
 
-  border-radius: 14px;
+          <div className="featureIntro">
 
-  background:
-    rgba(3, 15, 31, 0.8);
-}
+            <div className="featureIcon">
+              KNOW
+            </div>
 
-.processingHeader {
-  display: flex;
+            <h1>
+              Knowledge Base
+            </h1>
 
-  justify-content: space-between;
+            <p>
+              Search the assistant's built-in
+              knowledge topics.
+            </p>
 
-  margin-bottom: 9px;
+          </div>
 
-  color: #45d4ff;
 
-  font-size: 14px;
-}
+          <input
+            className="knowledgeSearch"
+            value={knowledgeSearch}
+            onChange={(event) =>
+              setKnowledgeSearch(
+                event.target.value
+              )
+            }
+            placeholder="Search knowledge..."
+          />
 
-.processingHeader strong {
-  font-size: 16px;
-}
 
-.processingBar {
-  height: 7px;
+          <div className="knowledgeGrid">
 
-  overflow: hidden;
+            {filteredKnowledge.map(
+              (item) => (
 
-  border-radius: 10px;
+                <button
+                  className="knowledgeCard"
+                  key={item.title}
+                  onClick={() =>
+                    setMessage(
+                      `Tell me more about ${item.title}`
+                    )
+                  }
+                >
 
-  background: #06162b;
-}
+                  <strong>
+                    {item.title}
+                  </strong>
 
-.processingProgress {
-  height: 100%;
+                  <p>
+                    {item.text}
+                  </p>
 
-  border-radius: 10px;
+                  <span>
+                    Ask AI
+                  </span>
 
-  background:
-    linear-gradient(
-      90deg,
-      #00aaff,
-      #25dfff
-    );
+                </button>
 
-  box-shadow:
-    0 0 10px #00bfff;
+              )
+            )}
 
-  transition:
-    width 0.25s ease;
-}
+          </div>
 
+        </main>
 
-/* =========================================================
-   SYSTEM CARDS
-========================================================= */
+      )}
 
-.systemCards {
-  display: grid;
 
-  grid-template-columns:
-    1fr
-    80px
-    1fr;
+      {/* VOICE */}
 
-  gap: 10px;
+      {activePage === "Voice" && (
 
-  margin-top: 12px;
-}
+        <main className="featurePage">
 
-.systemCard {
-  min-height: 75px;
+          <div className="featureHeader">
 
-  display: flex;
+            <h2>
+              VOICE
+            </h2>
 
-  align-items: center;
+          </div>
 
-  gap: 10px;
 
-  padding: 10px;
+          <div className="voicePanel">
 
-  border:
-    1px solid rgba(0, 125, 255, 0.25);
+            <div className="voiceCircle">
+              VOICE
+            </div>
 
-  border-radius: 14px;
+            <h1>
+              AI Voice
+            </h1>
 
-  background:
-    rgba(3, 15, 31, 0.8);
-}
+            <p>
+              Your browser can read AI responses
+              aloud using its built-in speech system.
+            </p>
 
-.systemCard small {
-  color: #7c91b4;
 
-  font-size: 9px;
-}
+            <button
+              className={
+                "largeAction " +
+                (voiceEnabled
+                  ? "enabled"
+                  : "")
+              }
+              onClick={toggleVoice}
+            >
+              {voiceEnabled
+                ? "VOICE ON"
+                : "VOICE OFF"}
+            </button>
 
-.systemCard strong {
-  display: block;
 
-  margin-top: 3px;
+            {voiceEnabled && (
 
-  color: #a8c9ed;
+              <div className="voiceStatus">
+                Voice responses are enabled.
+              </div>
 
-  font-size: 10px;
-}
+            )}
 
-.core {
-  display: flex;
+          </div>
 
-  align-items: center;
-  justify-content: center;
-}
+        </main>
 
-.core div {
-  width: 50px;
-  height: 50px;
+      )}
 
-  border-radius: 50%;
 
-  border:
-    1px solid #00baff;
+      {/* SETTINGS */}
 
-  box-shadow:
-    0 0 20px rgba(0, 180, 255, 0.5);
+      {activePage === "Settings" && (
 
-  animation:
-    corePulse 2s infinite;
-}
+        <main className="featurePage">
 
-@keyframes corePulse {
-  50% {
-    transform: scale(0.88);
-  }
-}
+          <div className="featureHeader">
 
+            <h2>
+              SETTINGS
+            </h2>
 
-/* =========================================================
-   CHAT
-========================================================= */
+          </div>
 
-.chatPanel {
-  position: relative;
 
-  min-width: 420px;
+          <div className="settingsList">
 
-  min-height: calc(100vh - 105px);
+            <div className="settingItem">
 
-  display: flex;
-  flex-direction: column;
+              <div>
+                <strong>
+                  Automatic Memory
+                </strong>
 
-  border:
-    1px solid rgba(0, 130, 255, 0.3);
+                <p>
+                  Save questions you ask the AI.
+                </p>
+              </div>
 
-  border-radius: 20px;
+              <button
+                className={
+                  "switch " +
+                  (memoryEnabled
+                    ? "on"
+                    : "")
+                }
+                onClick={() =>
+                  setMemoryEnabled(
+                    !memoryEnabled
+                  )
+                }
+              >
+                <span></span>
+              </button>
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(3, 14, 29, 0.97),
-      rgba(1, 8, 18, 0.97)
-    );
+            </div>
 
-  overflow: hidden;
-}
 
+            <div className="settingItem">
 
-/* =========================================================
-   CHAT HEADER
-========================================================= */
+              <div>
+                <strong>
+                  Voice Responses
+                </strong>
 
-.chatHeader {
-  height: 62px;
+                <p>
+                  Read AI responses aloud.
+                </p>
+              </div>
 
-  flex-shrink: 0;
+              <button
+                className={
+                  "switch " +
+                  (voiceEnabled
+                    ? "on"
+                    : "")
+                }
+                onClick={toggleVoice}
+              >
+                <span></span>
+              </button>
 
-  display: flex;
+            </div>
 
-  align-items: center;
-  justify-content: space-between;
 
-  padding: 0 18px;
+            <div className="settingItem">
 
-  border-bottom:
-    1px solid rgba(70, 130, 200, 0.12);
-}
+              <div>
+                <strong>
+                  Auto Scroll
+                </strong>
 
-.chatHeader h2 {
-  margin: 0;
+                <p>
+                  Automatically scroll to new messages.
+                </p>
+              </div>
 
-  color: #48d8ff;
+              <button
+                className={
+                  "switch " +
+                  (autoScroll
+                    ? "on"
+                    : "")
+                }
+                onClick={() =>
+                  setAutoScroll(
+                    !autoScroll
+                  )
+                }
+              >
+                <span></span>
+              </button>
 
-  font-size: 17px;
-}
+            </div>
 
-.chatHeader button {
-  padding: 8px 12px;
 
-  border:
-    1px solid rgba(70, 130, 210, 0.3);
+            <div className="settingItem">
 
-  border-radius: 8px;
+              <div>
+                <strong>
+                  Notifications
+                </strong>
 
-  background:
-    rgba(20, 40, 70, 0.35);
+                <p>
+                  Enable application notifications.
+                </p>
+              </div>
 
-  color: #9eb2d0;
+              <button
+                className={
+                  "switch " +
+                  (notifications
+                    ? "on"
+                    : "")
+                }
+                onClick={() =>
+                  setNotifications(
+                    !notifications
+                  )
+                }
+              >
+                <span></span>
+              </button>
 
-  cursor: pointer;
-}
+            </div>
 
 
-/* =========================================================
-   MESSAGES
-========================================================= */
+            <div className="settingItem">
 
-.messages {
-  flex: 1;
+              <div>
+                <strong>
+                  Appearance
+                </strong>
 
-  min-height: 0;
+                <p>
+                  Change the application theme.
+                </p>
+              </div>
 
-  overflow-x: auto;
-  overflow-y: auto;
+              <button
+                className="themeButton"
+                onClick={() =>
+                  setTheme(
+                    theme === "dark"
+                      ? "light"
+                      : "dark"
+                  )
+                }
+              >
+                {theme === "dark"
+                  ? "DARK"
+                  : "LIGHT"}
+              </button>
 
-  padding: 18px;
+            </div>
 
-  scroll-behavior: smooth;
+          </div>
 
-  -webkit-overflow-scrolling: touch;
-}
+        </main>
 
-.messages::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
+      )}
 
-.messages::-webkit-scrollbar-thumb {
-  background:
-    rgba(0, 140, 255, 0.35);
 
-  border-radius: 10px;
-}
+      {/* CHAT PANEL */}
 
+      {activePage === "Chat" && (
 
-/* =========================================================
-   MESSAGE
-========================================================= */
+        <section className="chatPanel">
 
-.messageRow {
-  display: flex;
+          <header className="chatHeader">
 
-  gap: 10px;
+            <h2>
+              CHAT
+            </h2>
 
-  width: 100%;
+            <button
+              onClick={clearChat}
+            >
+              Clear Chat
+            </button>
 
-  margin-bottom: 22px;
-}
+          </header>
 
-.messageRow.user {
-  justify-content: flex-end;
-}
 
-.messageRow.ai {
-  justify-content: flex-start;
-}
+          <div
+            className="messages"
+            ref={messagesRef}
+          >
 
-.smallRobot,
-.userAvatar {
-  width: 38px;
-  height: 38px;
+            {messages.map((item) => (
 
-  flex-shrink: 0;
+              <div
+                key={item.id}
+                className={
+                  "messageRow " +
+                  item.sender
+                }
+              >
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+                {item.sender === "ai" && (
 
-  border-radius: 50%;
+                  <div className="smallRobot">
+                    AI
+                  </div>
 
-  font-size: 10px;
-  font-weight: bold;
-}
+                )}
 
-.smallRobot {
-  border:
-    1px solid #00bfff;
 
-  color: #40ddff;
+                <div className="messageContent">
 
-  background:
-    rgba(0, 110, 255, 0.08);
+                  <div className="messageInfo">
 
-  box-shadow:
-    0 0 15px rgba(0, 160, 255, 0.3);
-}
+                    {item.sender === "ai"
+                      ? "AI ASSISTANT"
+                      : "YOU"}
 
-.userAvatar {
-  border:
-    1px solid #697d9f;
+                  </div>
 
-  color: #b4c3dc;
 
-  background:
-    #172033;
-}
+                  <div className="messageBubble">
+                    {item.text}
+                  </div>
 
-.messageContent {
-  max-width: calc(100% - 50px);
+                </div>
 
-  min-width: 0;
-}
 
-.messageInfo {
-  margin-bottom: 6px;
+                {item.sender === "user" && (
 
-  color: #7589aa;
+                  <div className="userAvatar">
+                    YOU
+                  </div>
 
-  font-size: 10px;
-}
+                )}
 
-.messageRow.user .messageInfo {
-  text-align: right;
-}
+              </div>
 
-.messageBubble {
-  max-width: 100%;
+            ))}
 
-  padding: 13px 16px;
 
-  border:
-    1px solid rgba(70, 130, 210, 0.25);
+            {isThinking && (
 
-  border-radius: 14px;
+              <div className="messageRow ai">
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(8, 27, 52, 0.95),
-      rgba(2, 12, 26, 0.95)
-    );
+                <div className="smallRobot">
+                  AI
+                </div>
 
-  color: #e0edff;
+                <div className="messageContent">
 
-  font-size: 13px;
+                  <div className="messageInfo">
+                    AI ASSISTANT IS THINKING...
+                  </div>
 
-  line-height: 1.65;
+                  <div className="typing">
 
-  white-space: pre-wrap;
+                    <span></span>
+                    <span></span>
+                    <span></span>
 
-  overflow-wrap: anywhere;
+                  </div>
 
-  word-break: break-word;
-}
+                </div>
 
-.messageRow.user .messageBubble {
-  background:
-    linear-gradient(
-      135deg,
-      #0758d8,
-      #1747af
-    );
+              </div>
 
-  border-color:
-    #216cff;
-}
+            )}
 
+          </div>
 
-/* =========================================================
-   TYPING
-========================================================= */
 
-.typing {
-  display: flex;
+          <div className="chatInput">
 
-  align-items: center;
+            <button
+              className="micButton"
+              onClick={() =>
+                changePage("Voice")
+              }
+            >
+              MIC
+            </button>
 
-  gap: 7px;
 
-  width: fit-content;
+            <input
+              value={message}
+              onChange={(event) =>
+                setMessage(
+                  event.target.value
+                )
+              }
+              onKeyDown={handleKeyDown}
+              placeholder="Ask me anything..."
+              disabled={isThinking}
+            />
 
-  padding: 12px 15px;
 
-  border:
-    1px solid rgba(0, 130, 255, 0.25);
+            <button
+              className="sendButton"
+              onClick={askAI}
+              disabled={isThinking}
+            >
+              SEND
+            </button>
 
-  border-radius: 13px;
+          </div>
 
-  background:
-    rgba(4, 18, 38, 0.85);
-}
+        </section>
 
-.typing span {
-  width: 7px;
-  height: 7px;
+      )}
 
-  border-radius: 50%;
 
-  background: #00bfff;
+      {/* BOTTOM NAVIGATION */}
 
-  box-shadow:
-    0 0 8px #00bfff;
+      <nav className="bottomNavigation">
 
-  animation:
-    typingDot 1s infinite;
-}
+        <button
+          className={
+            "bottomButton " +
+            (activePage === "Chat"
+              ? "active"
+              : "")
+          }
+          onClick={() =>
+            changePage("Chat")
+          }
+        >
+          <span>CHAT</span>
+          <span>Chat</span>
+        </button>
 
-.typing span:nth-child(2) {
-  animation-delay: 0.15s;
-}
 
-.typing span:nth-child(3) {
-  animation-delay: 0.3s;
-}
+        <button
+          className={
+            "bottomButton " +
+            (activePage === "Memory"
+              ? "active"
+              : "")
+          }
+          onClick={() =>
+            changePage("Memory")
+          }
+        >
+          <span>MEM</span>
+          <span>Memory</span>
+        </button>
 
-@keyframes typingDot {
-  50% {
-    transform: translateY(-5px);
 
-    opacity: 0.4;
-  }
-}
+        <button
+          className="aiBottomButton"
+          onClick={() =>
+            changePage("Chat")
+          }
+        >
+          AI
+        </button>
 
 
-/* =========================================================
-   CHAT INPUT
-========================================================= */
+        <button
+          className={
+            "bottomButton " +
+            (activePage === "Knowledge"
+              ? "active"
+              : "")
+          }
+          onClick={() =>
+            changePage("Knowledge")
+          }
+        >
+          <span>BOOK</span>
+          <span>Knowledge</span>
+        </button>
 
-.chatInput {
-  height: 66px;
 
-  flex-shrink: 0;
+        <button
+          className={
+            "bottomButton " +
+            (activePage === "Settings"
+              ? "active"
+              : "")
+          }
+          onClick={() =>
+            changePage("Settings")
+          }
+        >
+          <span>SET</span>
+          <span>Settings</span>
+        </button>
 
-  display: flex;
+      </nav>
 
-  gap: 8px;
-
-  padding: 8px 10px;
-
-  border-top:
-    1px solid rgba(70, 130, 200, 0.12);
-
-  background:
-    rgba(2, 9, 20, 0.98);
-}
-
-.chatInput input {
-  flex: 1;
-
-  min-width: 0;
-
-  height: 50px;
-
-  padding: 0 14px;
-
-  border:
-    1px solid rgba(70, 130, 210, 0.25);
-
-  border-radius: 11px;
-
-  outline: none;
-
-  background:
-    #071326;
-
-  color: white;
-
-  font-size: 13px;
-}
-
-.chatInput input:focus {
-  border-color:
-    #009dff;
-
-  box-shadow:
-    0 0 15px rgba(0, 140, 255, 0.12);
-}
-
-.chatInput input::placeholder {
-  color: #637591;
-}
-
-.micButton,
-.sendButton {
-  width: 50px;
-  height: 50px;
-
-  flex-shrink: 0;
-
-  border-radius: 11px;
-
-  cursor: pointer;
-}
-
-.micButton {
-  border:
-    1px solid rgba(80, 140, 220, 0.3);
-
-  background:
-    #081426;
-
-  color: #8ca2c4;
-
-  font-size: 9px;
-}
-
-.sendButton {
-  border: 0;
-
-  background:
-    linear-gradient(
-      135deg,
-      #00aaff,
-      #145aff
-    );
-
-  color: white;
-
-  font-size: 9px;
-
-  box-shadow:
-    0 0 18px rgba(0, 140, 255, 0.3);
-}
-
-.sendButton:disabled {
-  opacity: 0.5;
-}
-
-
-/* =========================================================
-   BOTTOM NAV
-========================================================= */
-
-.bottomNavigation {
-  position: fixed;
-
-  z-index: 999;
-
-  left: 10px;
-  right: 10px;
-  bottom: 8px;
-
-  height: 62px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-
-  border:
-    1px solid rgba(0, 135, 255, 0.3);
-
-  border-radius: 15px;
-
-  background:
-    rgba(2, 10, 22, 0.96);
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-
-  box-shadow:
-    0 -5px 30px rgba(0, 70, 160, 0.12);
-}
-
-.bottomButton {
-  flex: 1;
-
-  min-width: 80px;
-
-  height: 52px;
-
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 3px;
-
-  border: 0;
-
-  background: transparent;
-
-  color: #7f91af;
-
-  cursor: pointer;
-}
-
-.bottomButton.active {
-  color: #48d9ff;
-
-  text-shadow:
-    0 0 12px rgba(0, 190, 255, 0.5);
-}
-
-.bottomButton span:first-child {
-  font-size: 9px;
-  font-weight: bold;
-}
-
-.bottomButton span:last-child {
-  font-size: 10px;
-}
-
-.aiBottomButton {
-  width: 62px;
-  height: 62px;
-
-  flex-shrink: 0;
-
-  margin-top: -22px;
-
-  border:
-    1px solid #00bfff;
-
-  border-radius: 50%;
-
-  background:
-    radial-gradient(
-      circle,
-      #0c2d52,
-      #031021
-    );
-
-  color: #45dfff;
-
-  font-size: 18px;
-
-  box-shadow:
-    0 0 20px rgba(0, 180, 255, 0.45);
-
-  cursor: pointer;
-}
-
-
-/* =========================================================
-   IPAD
-========================================================= */
-
-@media (max-width: 1100px) {
-
-  .assistant {
-    min-width: 1170px;
-
-    grid-template-columns:
-      210px
-      470px
-      470px;
-  }
-
-  .sidebar {
-    width: 210px;
-    min-width: 210px;
-  }
-
-  .mainDisplay {
-    min-width: 470px;
-  }
-
-  .chatPanel {
-    min-width: 470px;
-  }
-}
-
-
-/* =========================================================
-   SCROLLBAR
-========================================================= */
-
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
-
-::-webkit-scrollbar-track {
-  background:
-    rgba(0, 0, 0, 0.15);
-}
-
-::-webkit-scrollbar-thumb {
-  background:
-    rgba(0, 140, 255, 0.4);
-
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background:
-    rgba(0, 180, 255, 0.7);
-}
-
-
-/* =========================================================
-   SELECTION
-========================================================= */
-
-::selection {
-  background:
-    rgba(0, 150, 255, 0.35);
-
-  color: white;
+    </div>
+  );
 }
