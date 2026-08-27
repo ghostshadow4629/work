@@ -4,5 +4,5 @@
     "build": "babel src -d lib",
     "test": "jest"
   },
-  "homepage": "https://<your-username>.github.io/<your-repo-name>",
+  "homepage": "https://ghostshadow4629.github.io/work",
 }
