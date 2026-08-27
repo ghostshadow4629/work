@@ -3,5 +3,6 @@
   "scripts": {
     "build": "babel src -d lib",
     "test": "jest"
-  }
+  },
+  "homepage": "https://<your-username>.github.io/<your-repo-name>",
 }
