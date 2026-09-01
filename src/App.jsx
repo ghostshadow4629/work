@@ -320,11 +320,12 @@ export default function App() {
       const data =
         await response.json();
 
-      const answer =
-        data.answer ||
-        data.message ||
-        data.response ||
-        getLocalAnswer(question);
+const answer =
+  data.reply ||
+  data.answer ||
+  data.message ||
+  data.response ||
+  getLocalAnswer(question);
 
       setMessages((previous) => [
         ...previous,
