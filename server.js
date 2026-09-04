@@ -1,100 +1,228 @@
-const express = require("express");
-const path = require("path");
+import http from "http";
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
-app.use(express.json());
+const API_KEY =
+  process.env.OPENROUTER_API_KEY;
 
-// Serve React build
-const buildPath = path.join(__dirname, "build");
-app.use(express.static(buildPath));
+const personalities = {
+  Mentor:
+    "Be supportive, patient and encouraging.",
 
-// Backend status
-app.get("/api/status", (req, res) => {
-  res.json({
-    online: true,
-    message: "AI backend is running",
-  });
-});
+  Teacher:
+    "Explain concepts clearly and step by step.",
 
-// AI endpoint
-app.post("/api/chat", async (req, res) => {
-  try {
-    const { message } = req.body;
+  Challenger:
+    "Challenge the student to think deeply.",
 
-    if (!message || typeof message !== "string") {
-      return res.status(400).json({
-        error: "Message is required.",
-      });
-    }
+  Analyst:
+    "Be logical, precise and technically accurate.",
 
-    const apiKey = process.env.OPENROUTER_API_KEY;
+  Coach:
+    "Be motivating and practical.",
 
-    if (!apiKey) {
-      return res.status(500).json({
-        error: "OpenRouter API key is not configured.",
-      });
-    }
+  Zen:
+    "Be calm, simple and reassuring.",
+};
 
-    const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "openrouter/free",
-          messages: [
-            {
-              role: "user",
-              content: message,
-            },
-          ],
-        }),
-      }
+const server = http.createServer(
+  async (req, res) => {
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      "*"
     );
 
-    const data = await response.json();
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type"
+    );
 
-    if (!response.ok) {
-      console.error("OpenRouter error:", data);
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "POST, OPTIONS"
+    );
 
-      return res.status(response.status).json({
-        error:
-          data?.error?.message ||
-          "OpenRouter request failed.",
-      });
+    if (req.method === "OPTIONS") {
+      res.writeHead(204);
+      res.end();
+      return;
     }
 
-    const reply =
-      data?.choices?.[0]?.message?.content;
-
-    if (!reply) {
-      return res.status(502).json({
-        error: "OpenRouter returned no response.",
-      });
+    if (
+      req.method !== "POST" ||
+      req.url !== "/api/chat"
+    ) {
+      res.writeHead(404);
+      res.end(
+        JSON.stringify({
+          error: "Not found",
+        })
+      );
+      return;
     }
 
-    res.json({
-      reply,
-    });
-  } catch (error) {
-    console.error("AI request error:", error);
+    if (!API_KEY) {
+      res.writeHead(500, {
+        "Content-Type":
+          "application/json",
+      });
 
-    res.status(500).json({
-      error: "Server error while contacting AI.",
-    });
+      res.end(
+        JSON.stringify({
+          error:
+            "OPENROUTER_API_KEY is missing.",
+        })
+      );
+
+      return;
+    }
+
+    try {
+      let body = "";
+
+      for await (const chunk of req) {
+        body += chunk;
+      }
+
+      const data = JSON.parse(body);
+
+      const personality =
+        data.personality || "Mentor";
+
+      const messages =
+        Array.isArray(data.messages)
+          ? data.messages
+          : [];
+
+      const systemMessage = {
+        role: "system",
+
+        content: `
+You are the AI tutor inside AI MIMO.
+
+The student's name is Adam.
+
+You teach:
+- Python
+- Programming
+- Mathematics
+- Computer science
+
+Your personality:
+${
+  personalities[personality] ||
+  personalities.Mentor
+}
+
+Help Adam learn rather than simply giving answers.
+
+For Python:
+- Explain concepts.
+- Explain errors.
+- Show corrected code when useful.
+
+For Math:
+- Show the important steps.
+- Explain why each step works.
+
+Be accurate, helpful and concise.
+        `,
+      };
+
+      const openRouterResponse =
+        await fetch(
+          "https://openrouter.ai/api/v1/chat/completions",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              "Authorization":
+                `Bearer ${API_KEY}`,
+
+              "HTTP-Referer":
+                "http://localhost:3000",
+
+              "X-Title":
+                "AI MIMO",
+            },
+
+            body: JSON.stringify({
+              model: "openrouter/free",
+
+              messages: [
+                systemMessage,
+                ...messages,
+              ],
+            }),
+          }
+        );
+
+      const result =
+        await openRouterResponse.json();
+
+      if (!openRouterResponse.ok) {
+        console.error(
+          "OpenRouter:",
+          result
+        );
+
+        res.writeHead(
+          openRouterResponse.status,
+          {
+            "Content-Type":
+              "application/json",
+          }
+        );
+
+        res.end(
+          JSON.stringify({
+            error:
+              result?.error?.message ||
+              "OpenRouter request failed.",
+          })
+        );
+
+        return;
+      }
+
+      const answer =
+        result?.choices?.[0]?.message?.content;
+
+      res.writeHead(200, {
+        "Content-Type":
+          "application/json",
+      });
+
+      res.end(
+        JSON.stringify({
+          answer:
+            answer ||
+            "I didn't receive an answer from the AI.",
+        })
+      );
+    } catch (error) {
+      console.error(error);
+
+      res.writeHead(500, {
+        "Content-Type":
+          "application/json",
+      });
+
+      res.end(
+        JSON.stringify({
+          error:
+            "The AI tutor could not process the request.",
+        })
+      );
+    }
   }
-});
+);
 
-// React fallback
-app.get("*", (req, res) => {
-  res.sendFile(path.join(buildPath, "index.html"));
-});
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
+server.listen(PORT, () => {
+  console.log(
+    `AI MIMO backend running on port ${PORT}`
+  );
 });
