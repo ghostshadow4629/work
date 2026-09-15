@@ -294,19 +294,22 @@ function ChatPage() {
       );
     }
 
-    if (!data?.answer) {
-      throw new Error(
-        "The server returned JSON, but there was no AI answer."
-      );
-    }
+if (!data?.message) {
+  throw new Error(
+    "The server returned JSON, but there was no message."
+  );
+}
 
-    setMessages((old) => [
-      ...old,
-      {
-        role: "assistant",
-        content: data.answer
-      }
-    ]);
+setMessages((old) => [
+  ...old,
+  {
+    role: "assistant",
+    content:
+      typeof data.message === "string"
+        ? data.message
+        : JSON.stringify(data.message, null, 2)
+  }
+]);
 
   } catch (error) {
     console.error("Chat error:", error);
