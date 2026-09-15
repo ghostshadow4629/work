@@ -165,6 +165,13 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
+app.get("/api/test", (req, res) => {
+  res.json({
+    ok: true,
+    message: "Backend is responding correctly."
+  });
+});
+
 app.listen(PORT, "0.0.0.0", () => {
   console.log(
     `AI MIMO backend running on port ${PORT}`
