@@ -117,8 +117,6 @@ app.post("/api/chat", async (req, res) => {
     }
 
     // Extract AI answer
-console.log("FULL OPENROUTER JSON:");
-console.log(JSON.stringify(data, null, 2));
 
 const message = data?.choices?.[0]?.message;
 
