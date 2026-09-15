@@ -117,8 +117,21 @@ app.post("/api/chat", async (req, res) => {
     }
 
     // Extract AI answer
-    const answer =
-      data?.choices?.[0]?.message?.content;
+console.log("FULL OPENROUTER JSON:");
+console.log(JSON.stringify(data, null, 2));
+
+const message = data?.choices?.[0]?.message;
+
+if (!message) {
+  return res.status(502).json({
+    error: "OpenRouter response contained no message.",
+    fullResponse: data
+  });
+}
+
+return res.status(200).json({
+  message: message
+});
 
     if (!answer) {
       console.error(
