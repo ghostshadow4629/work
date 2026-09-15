@@ -1,36 +1,34 @@
 const express = require("express");
-const path = require("path");
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
-// Parse JSON requests
 app.use(express.json());
 
-
-// =====================================================
-// API TEST
-// =====================================================
+app.get("/", (req, res) => {
+  res.status(200).send("AI MIMO BACKEND IS RUNNING");
+});
 
 app.get("/api/test", (req, res) => {
+  console.log("TEST ROUTE WAS HIT");
+
   res.status(200).json({
     ok: true,
-    message: "AI MIMO backend is running.",
-    service: "work-ptgl"
+    test: "SERVER.JS IS DEFINITELY RUNNING",
+    timestamp: new Date().toISOString()
   });
 });
 
-
-// =====================================================
-// AI CHAT API
-// =====================================================
-
 app.post("/api/chat", async (req, res) => {
+  console.log("CHAT ROUTE WAS HIT");
+
   try {
     const question = req.body?.question;
 
-    if (!question || !question.trim()) {
+    console.log("Question:", question);
+
+    if (!question) {
       return res.status(400).json({
         error: "No question was provided."
       });
@@ -39,15 +37,15 @@ app.post("/api/chat", async (req, res) => {
     const apiKey = process.env.OPENROUTER_API_KEY;
 
     if (!apiKey) {
-      console.error("OPENROUTER_API_KEY is missing.");
+      console.error("OPENROUTER_API_KEY IS MISSING");
 
       return res.status(500).json({
         error: "OPENROUTER_API_KEY is missing on Render."
       });
     }
 
-    console.log("Received question:", question);
-    console.log("Calling OpenRouter...");
+    console.log("OPENROUTER KEY EXISTS");
+    console.log("CALLING OPENROUTER");
 
     const response = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
@@ -56,7 +54,6 @@ app.post("/api/chat", async (req, res) => {
 
         headers: {
           "Content-Type": "application/json",
-
           "Authorization": apiKey.startsWith("Bearer ")
             ? apiKey
             : `Bearer ${apiKey}`
@@ -75,82 +72,64 @@ app.post("/api/chat", async (req, res) => {
       }
     );
 
+    console.log(
+      "OPENROUTER STATUS:",
+      response.status
+    );
+
     const rawText = await response.text();
 
-    console.log("OpenRouter status:", response.status);
     console.log(
-      "OpenRouter response length:",
+      "OPENROUTER BODY LENGTH:",
       rawText.length
     );
 
-    // OpenRouter returned an HTTP error
-    if (!response.ok) {
-      console.error("OpenRouter error:", rawText);
+    console.log(
+      "OPENROUTER BODY:",
+      rawText
+    );
 
+    if (!response.ok) {
       return res.status(response.status).json({
         error: "OpenRouter returned an error.",
         details: rawText
       });
     }
 
-    // OpenRouter returned nothing
     if (!rawText.trim()) {
-      console.error("OpenRouter returned an empty response.");
-
       return res.status(502).json({
         error: "OpenRouter returned an empty response."
       });
     }
 
-    // Convert OpenRouter response to JSON
     let data;
 
     try {
       data = JSON.parse(rawText);
     } catch (error) {
-      console.error("Invalid JSON from OpenRouter:", rawText);
-
       return res.status(502).json({
         error: "OpenRouter returned invalid JSON.",
         raw: rawText
       });
     }
 
-    // Extract AI answer
+    console.log("FULL OPENROUTER JSON:");
+    console.log(
+      JSON.stringify(data, null, 2)
+    );
 
-const message = data?.choices?.[0]?.message;
-
-if (!message) {
-  return res.status(502).json({
-    error: "OpenRouter response contained no message.",
-    fullResponse: data
-  });
-}
-
-return res.status(200).json({
-  answer: message.content
-});
-
-    if (!answer) {
-      console.error(
-        "OpenRouter response contained no AI message:",
-        data
-      );
-
-      return res.status(502).json({
-        error: "OpenRouter response contained no AI message.",
-        response: data
-      });
-    }
-
-    console.log("AI answer received.");
-
-    return res.status(200).json({
-      answer: answer
-    });
+    /*
+     * DIAGNOSTIC MODE
+     *
+     * Return the ENTIRE OpenRouter JSON.
+     */
+    return res.status(200).json(data);
 
   } catch (error) {
-    console.error("SERVER ERROR:", error);
+    console.error(
+      "SERVER ERROR:",
+      error
+    );
 
     return res.status(500).json({
       error: "Server failed while contacting OpenRouter.",
@@ -159,35 +138,25 @@ return res.status(200).json({
   }
 });
 
+app.listen(
+  PORT,
+  "0.0.0.0",
+  () => {
+    console.log(
+      "================================="
+    );
 
-// =====================================================
-// SERVE REACT APP
-// =====================================================
+    console.log(
+      "AI MIMO BACKEND STARTED"
+    );
 
-const buildPath = path.join(__dirname, "build");
+    console.log(
+      "PORT:",
+      PORT
+    );
 
-app.use(express.static(buildPath));
-
-
-// =====================================================
-// REACT SPA FALLBACK
-// =====================================================
-
-// Any normal browser route that isn't an API route
-// gets the React application.
-app.get("*", (req, res) => {
-  res.sendFile(path.join(buildPath, "index.html"));
-});
-
-
-// =====================================================
-// START SERVER
-// =====================================================
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log("=================================");
-  console.log("AI MIMO SERVER STARTED");
-  console.log("Port:", PORT);
-  console.log("React build:", buildPath);
-  console.log("=================================");
-});
+    console.log(
+      "================================="
+    );
+  }
+);
