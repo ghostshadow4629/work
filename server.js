@@ -18,14 +18,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Simple backend test
-app.get("/api/test", (req, res) => {
-  res.status(200).json({
-    ok: true,
-    message: "AI MIMO backend is running."
-  });
-});
-
 // AI CHAT
 app.post("/api/chat", async (req, res) => {
   try {
