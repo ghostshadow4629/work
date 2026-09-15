@@ -226,144 +226,117 @@ function ChatPage() {
    * to server.js.
    */
   const sendMessage = async () => {
-    const text = input.trim();
+  const text = input.trim();
 
-    if (!text || loading) return;
+  if (!text || loading) return;
 
-    // Show the user's message immediately
-    setMessages((old) => [
-      ...old,
-      {
-        role: "user",
-        content: text
-      }
-    ]);
+  setMessages((old) => [
+    ...old,
+    {
+      role: "user",
+      content: text
+    }
+  ]);
 
-    setInput("");
-    setLoading(true);
+  setInput("");
+  setLoading(true);
 
-    const controller = new AbortController();
+  const controller = new AbortController();
 
-    // Give Render/OpenRouter up to 90 seconds
-    const timeout = setTimeout(() => {
-      controller.abort();
-    }, 90000);
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, 90000);
 
-    try {
-const response = await fetch("/api/chat", {
-        {
-          method: "POST",
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        question: text
+      }),
+      signal: controller.signal
+    });
 
-          headers: {
-            "Content-Type": "application/json"
-          },
+    const raw = await response.text();
 
-          body: JSON.stringify({
-            question: text
-          }),
+    console.log("CHAT HTTP STATUS:", response.status);
+    console.log("CHAT RESPONSE:", raw);
 
-          signal: controller.signal
-        }
-      );
-
-      const raw = await response.text();
-
-      console.log(
-        "Backend HTTP status:",
-        response.status
-      );
-
-      console.log(
-        "Backend response:",
-        raw
-      );
-
-      // Handle HTTP errors
-      if (!response.ok) {
-        let data = null;
-
-        try {
-          data = JSON.parse(raw);
-        } catch {
-          // Server response was not JSON
-        }
-
-        throw new Error(
-          `HTTP ${response.status}: ${
-            data?.error ||
-            raw ||
-            "Request failed"
-          }`
-        );
-      }
-
-      // Handle empty response
-      if (!raw.trim()) {
-        throw new Error(
-          "The server returned HTTP 200 but sent an empty response."
-        );
-      }
-
-      let data;
+    if (!response.ok) {
+      let data = null;
 
       try {
         data = JSON.parse(raw);
-      } catch {
-        throw new Error(
-          `Server returned invalid JSON: ${raw}`
-        );
-      }
+      } catch {}
 
-      // Make sure the backend sent an AI answer
-      if (!data?.answer) {
-        throw new Error(
-          "The server returned JSON, but there was no AI answer."
-        );
-      }
-
-      // Display the actual AI response
-      setMessages((old) => [
-        ...old,
-        {
-          role: "assistant",
-          content: data.answer
-        }
-      ]);
-    } catch (error) {
-      console.error(
-        "Chat error:",
-        error
+      throw new Error(
+        `HTTP ${response.status}: ${
+          data?.error || raw || "Request failed"
+        }`
       );
-
-      let message;
-
-      if (error?.name === "AbortError") {
-        message =
-          "The AI took longer than 90 seconds to respond. Please try again.";
-      } else {
-        message =
-          "Sorry, I couldn't reach the AI.\n\n" +
-          `ERROR: ${
-            error?.name || "Unknown"
-          }\n` +
-          `MESSAGE: ${
-            error?.message ||
-            "No error message"
-          }`;
-      }
-
-      setMessages((old) => [
-        ...old,
-        {
-          role: "assistant",
-          content: message
-        }
-      ]);
-    } finally {
-      clearTimeout(timeout);
-      setLoading(false);
     }
-  };
+
+    if (!raw.trim()) {
+      throw new Error(
+        "The server returned HTTP 200 but no response body."
+      );
+    }
+
+    let data;
+
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      throw new Error(
+        `Server returned invalid JSON: ${raw}`
+      );
+    }
+
+    if (!data?.answer) {
+      throw new Error(
+        "The server returned JSON, but there was no AI answer."
+      );
+    }
+
+    setMessages((old) => [
+      ...old,
+      {
+        role: "assistant",
+        content: data.answer
+      }
+    ]);
+
+  } catch (error) {
+    console.error("Chat error:", error);
+
+    let message;
+
+    if (error?.name === "AbortError") {
+      message =
+        "The AI took longer than 90 seconds to respond. Please try again.";
+    } else {
+      message =
+        `Sorry, I couldn't reach the AI.\n\n` +
+        `ERROR: ${error?.name || "Unknown"}\n` +
+        `MESSAGE: ${
+          error?.message || "No error message"
+        }`;
+    }
+
+    setMessages((old) => [
+      ...old,
+      {
+        role: "assistant",
+        content: message
+      }
+    ]);
+  } finally {
+    clearTimeout(timeout);
+    setLoading(false);
+  }
+};
 
   const useSuggestion = (text) => {
     setInput(text);
