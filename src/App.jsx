@@ -250,8 +250,7 @@ function ChatPage() {
     }, 90000);
 
     try {
-      const response = await fetch(
-        "https://work-1-kxm6.onrender.com/api/chat",
+const response = await fetch("/api/chat", {
         {
           method: "POST",
 
