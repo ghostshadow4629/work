@@ -211,130 +211,160 @@ function ChatPage() {
     "What is a for loop?"
   ];
 
+  /*
+   * SEND MESSAGE
+   *
+   * This is the only major part changed from your
+   * previous App.jsx.
+   *
+   * It sends:
+   *
+   * {
+   *   question: "your question"
+   * }
+   *
+   * to server.js.
+   */
   const sendMessage = async () => {
-  const text = input.trim();
+    const text = input.trim();
 
-  if (!text || loading) return;
+    if (!text || loading) return;
 
-  setMessages((old) => [
-    ...old,
-    {
-      role: "user",
-      content: text
-    }
-  ]);
-
-  setInput("");
-  setLoading(true);
-
-  const controller = new AbortController();
-
-  // Give OpenRouter/Render plenty of time to respond.
-  const timeout = setTimeout(() => {
-    controller.abort();
-  }, 90000);
-
-  try {
-    const response = await fetch(
-      "https://work-1-kxm6.onrender.com/api/chat",
+    // Show the user's message immediately
+    setMessages((old) => [
+      ...old,
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: "user",
-              content: text
-            }
-          ]
-        }),
-        signal: controller.signal
+        role: "user",
+        content: text
       }
-    );
+    ]);
 
-    const raw = await response.text();
+    setInput("");
+    setLoading(true);
 
-    if (!response.ok) {
-      let data = null;
+    const controller = new AbortController();
+
+    // Give Render/OpenRouter up to 90 seconds
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, 90000);
+
+    try {
+      const response = await fetch(
+        "https://work-1-kxm6.onrender.com/api/chat",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            question: text
+          }),
+
+          signal: controller.signal
+        }
+      );
+
+      const raw = await response.text();
+
+      console.log(
+        "Backend HTTP status:",
+        response.status
+      );
+
+      console.log(
+        "Backend response:",
+        raw
+      );
+
+      // Handle HTTP errors
+      if (!response.ok) {
+        let data = null;
+
+        try {
+          data = JSON.parse(raw);
+        } catch {
+          // Server response was not JSON
+        }
+
+        throw new Error(
+          `HTTP ${response.status}: ${
+            data?.error ||
+            raw ||
+            "Request failed"
+          }`
+        );
+      }
+
+      // Handle empty response
+      if (!raw.trim()) {
+        throw new Error(
+          "The server returned HTTP 200 but sent an empty response."
+        );
+      }
+
+      let data;
 
       try {
         data = JSON.parse(raw);
       } catch {
-        // Server returned something other than JSON.
+        throw new Error(
+          `Server returned invalid JSON: ${raw}`
+        );
       }
 
-      throw new Error(
-        `HTTP ${response.status}: ${
-          data?.error || raw || "Request failed"
-        }`
-      );
-    }
-
-if (!raw.trim()) {
-  // Wait 10 seconds before declaring the response empty.
-  await new Promise((resolve) => setTimeout(resolve, 10000));
-
-  if (!raw.trim()) {
-    throw new Error(
-      "The server finished with HTTP 200, but returned no response body after waiting 10 seconds."
-    );
-  }
-}
-
-    let data;
-
-    try {
-      data = JSON.parse(raw);
-    } catch {
-      throw new Error(
-        `Server returned invalid JSON: ${raw}`
-      );
-    }
-
-    if (!data?.answer) {
-      throw new Error(
-        "The server returned JSON, but there was no AI answer."
-      );
-    }
-
-    setMessages((old) => [
-      ...old,
-      {
-        role: "assistant",
-        content: data.answer
+      // Make sure the backend sent an AI answer
+      if (!data?.answer) {
+        throw new Error(
+          "The server returned JSON, but there was no AI answer."
+        );
       }
-    ]);
-  } catch (error) {
-    console.error("Chat error:", error);
 
-    let message;
+      // Display the actual AI response
+      setMessages((old) => [
+        ...old,
+        {
+          role: "assistant",
+          content: data.answer
+        }
+      ]);
+    } catch (error) {
+      console.error(
+        "Chat error:",
+        error
+      );
 
-    if (error?.name === "AbortError") {
-      message =
-        "The AI took longer than 90 seconds to respond. Please try again.";
-    } else {
-      message =
-        `Sorry, I couldn't reach the AI.\n\n` +
-        `ERROR: ${error?.name || "Unknown"}\n` +
-        `MESSAGE: ${
-          error?.message || "No error message"
-        }`;
-    }
+      let message;
 
-    setMessages((old) => [
-      ...old,
-      {
-        role: "assistant",
-        content: message
+      if (error?.name === "AbortError") {
+        message =
+          "The AI took longer than 90 seconds to respond. Please try again.";
+      } else {
+        message =
+          "Sorry, I couldn't reach the AI.\n\n" +
+          `ERROR: ${
+            error?.name || "Unknown"
+          }\n` +
+          `MESSAGE: ${
+            error?.message ||
+            "No error message"
+          }`;
       }
-    ]);
-  } finally {
-    clearTimeout(timeout);
-    setLoading(false);
-  }
-};
+
+      setMessages((old) => [
+        ...old,
+        {
+          role: "assistant",
+          content: message
+        }
+      ]);
+    } finally {
+      clearTimeout(timeout);
+      setLoading(false);
+    }
+  };
 
   const useSuggestion = (text) => {
     setInput(text);
@@ -427,15 +457,24 @@ if (!raw.trim()) {
                   index !== 0 && (
                     <div className="message-tools">
                       <button>
-                        <Icon name="copy" size={16} />
+                        <Icon
+                          name="copy"
+                          size={16}
+                        />
                       </button>
 
                       <button>
-                        <Icon name="like" size={16} />
+                        <Icon
+                          name="like"
+                          size={16}
+                        />
                       </button>
 
                       <button>
-                        <Icon name="dislike" size={16} />
+                        <Icon
+                          name="dislike"
+                          size={16}
+                        />
                       </button>
                     </div>
                   )}
@@ -465,7 +504,9 @@ if (!raw.trim()) {
         {suggestions.map((suggestion) => (
           <button
             key={suggestion}
-            onClick={() => useSuggestion(suggestion)}
+            onClick={() =>
+              useSuggestion(suggestion)
+            }
             disabled={loading}
           >
             {suggestion}
@@ -510,7 +551,9 @@ if (!raw.trim()) {
             className="send-button"
             onClick={sendMessage}
             title="Send"
-            disabled={loading || !input.trim()}
+            disabled={
+              loading || !input.trim()
+            }
           >
             <Icon name="send" size={21} />
           </button>
@@ -536,7 +579,9 @@ function PythonPage() {
       <header className="page-header">
         <div>
           <h1>Python Mode</h1>
-          <span>Learn, experiment &amp; build</span>
+          <span>
+            Learn, experiment &amp; build
+          </span>
         </div>
 
         <button className="small-action">
@@ -559,13 +604,16 @@ function PythonPage() {
             <em>1</em>
             <span className="pink">
               def factorial
-            </span>(n):
+            </span>
+            (n):
           </div>
 
           <div>
             <em>2</em>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <span className="pink">if</span>{" "}
+            <span className="pink">
+              if
+            </span>{" "}
             n == 0:
           </div>
 
@@ -581,7 +629,10 @@ function PythonPage() {
           <div>
             <em>4</em>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <span className="pink">else</span>:
+            <span className="pink">
+              else
+            </span>
+            :
           </div>
 
           <div>
@@ -599,7 +650,10 @@ function PythonPage() {
 
           <div>
             <em>7</em>
-            n = <span className="orange">5</span>
+            n ={" "}
+            <span className="orange">
+              5
+            </span>
           </div>
 
           <div>
@@ -637,23 +691,30 @@ function PythonPage() {
 
         {output && (
           <div className="output-success">
-            <Icon name="check" size={19} />
+            <Icon
+              name="check"
+              size={19}
+            />
           </div>
         )}
       </div>
 
       <div className="insight-card">
         <div className="insight-icon">
-          <Icon name="lightbulb" size={25} />
+          <Icon
+            name="lightbulb"
+            size={25}
+          />
         </div>
 
         <div>
           <h3>AI Insight</h3>
 
           <p>
-            Recursion solves a problem by calling
-            the same function with a smaller input
-            until it reaches a base case.
+            Recursion solves a problem by
+            calling the same function with a
+            smaller input until it reaches a
+            base case.
           </p>
 
           <span>
@@ -665,7 +726,10 @@ function PythonPage() {
   );
 }
 
-function PlaceholderPage({ title, icon }) {
+function PlaceholderPage({
+  title,
+  icon
+}) {
   return (
     <section className="placeholder-page">
       <div className="placeholder-icon">
@@ -675,14 +739,16 @@ function PlaceholderPage({ title, icon }) {
       <h1>{title}</h1>
 
       <p>
-        This section is ready for the next feature.
+        This section is ready for the next
+        feature.
       </p>
     </section>
   );
 }
 
 export default function App() {
-  const [active, setActive] = useState("Chat");
+  const [active, setActive] =
+    useState("Chat");
 
   const renderContent = () => {
     switch (active) {
