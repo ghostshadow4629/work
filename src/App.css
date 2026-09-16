@@ -573,17 +573,24 @@ button {
     0 0 0 3px rgba(123, 73, 255, 0.06);
 }
 
-.composer input {
+.composer textarea {
   flex: 1;
   min-width: 0;
+  min-height: 42px;
+  max-height: 150px;
+  resize: none;
+  overflow-y: auto;
   border: 0;
   outline: 0;
   background: transparent;
   color: #eeeaf8;
   font-size: 13px;
+  line-height: 1.5;
+  font-family: inherit;
+  padding: 10px 0;
 }
 
-.composer input::placeholder {
+.composer textarea::placeholder {
   color: #656273;
 }
 
