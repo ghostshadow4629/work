@@ -373,26 +373,24 @@ function ChatPage() {
         );
       }
 
-      /*
-       * DIAGNOSTIC MODE
-       *
-       * Display the ENTIRE JSON
-       * returned by OpenRouter.
-       */
-      const fullJson =
-        JSON.stringify(
-          data,
-          null,
-          2
-        );
+const answer =
+  typeof data?.answer === "string"
+    ? data.answer
+    : data?.choices?.[0]?.message?.content;
 
-      setMessages((old) => [
-        ...old,
-        {
-          role: "assistant",
-          content: fullJson
-        }
-      ]);
+if (!answer) {
+  throw new Error(
+    "The AI response did not contain an answer."
+  );
+}
+
+setMessages((old) => [
+  ...old,
+  {
+    role: "assistant",
+    content: answer
+  }
+]);
 
     } catch (error) {
       console.error(
