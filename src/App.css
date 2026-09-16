@@ -1027,3 +1027,77 @@ button {
     font-size: 9px;
   }
 }
+
+/* =========================
+   AI WAVE
+   ========================= */
+
+.wave {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 64px;
+  padding: 10px 20px;
+  overflow: hidden;
+}
+
+.wave-bar {
+  width: 3px;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to top,
+    #6d4aff,
+    #9d7cff
+  );
+
+  transform-origin: center;
+  animation: wave-idle 2s ease-in-out infinite;
+  animation-delay: calc(var(--wave-index) * -0.035s);
+}
+
+/* Active while AI is thinking */
+.wave.wave-active .wave-bar {
+  animation-name: wave-thinking;
+  animation-duration: 0.65s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes wave-idle {
+  0%,
+  100% {
+    transform: scaleY(0.7);
+  }
+
+  50% {
+    transform: scaleY(1.1);
+  }
+}
+
+@keyframes wave-thinking {
+  0%,
+  100% {
+    transform: scaleY(0.45);
+  }
+
+  25% {
+    transform: scaleY(1.8);
+  }
+
+  50% {
+    transform: scaleY(0.75);
+  }
+
+  75% {
+    transform: scaleY(1.45);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-bar {
+    animation: none;
+    transform: scaleY(0.8);
+  }
+}
