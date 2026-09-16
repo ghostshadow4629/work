@@ -622,29 +622,26 @@ function ChatPage() {
 
       <div className="composer-wrap">
         <div className="composer">
-          <input
-            value={input}
-            onChange={(e) =>
-              setInput(
-                e.target.value
-              )
-            }
-            onKeyDown={(e) => {
-              if (
-                e.key === "Enter" &&
-                !e.shiftKey
-              ) {
-                e.preventDefault();
-                sendMessage();
-              }
-            }}
-            placeholder={
-              loading
-                ? "AI Tutor is thinking..."
-                : "Ask anything..."
-            }
-            disabled={loading}
-          />
+          <textarea
+  value={input}
+  onChange={(e) =>
+    setInput(e.target.value)
+  }
+  onKeyDown={(e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+    // Shift + Enter = newline
+  }}
+  placeholder={
+    loading
+      ? "AI Tutor is thinking..."
+      : "Ask anything..."
+  }
+  disabled={loading}
+  rows={1}
+/>
 
           <button
             className="mic-button"
