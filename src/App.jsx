@@ -147,41 +147,20 @@ function Icon({ name, size = 22 }) {
   );
 }
 
-function Wave({ small = false }) {
-  return (
-    <div
-      className={`wave ${
-        small ? "wave-small" : ""
-      }`}
-    >
-      {Array.from({
-        length: small ? 24 : 60
-      }).map((_, i) => {
-        const height = small
-          ? Math.round(
-              Math.abs(
-                Math.sin(i * 0.7)
-              ) *
-                10 +
-                3
-            )
-          : Math.round(
-              Math.abs(
-                Math.sin(i * 0.55)
-              ) *
-                32 +
-                5
-            );
+function Wave({ active = false }) {
+  const bars = 55;
 
-        return (
-          <span
-            key={i}
-            style={{
-              height: `${height}px`
-            }}
-          />
-        );
-      })}
+  return (
+    <div className={`wave ${active ? "wave-active" : ""}`}>
+      {Array.from({ length: bars }).map((_, index) => (
+        <span
+          key={index}
+          className="wave-bar"
+          style={{
+            "--wave-index": index
+          }}
+        />
+      ))}
     </div>
   );
 }
@@ -488,7 +467,7 @@ setMessages((old) => [
       </header>
 
       <div className="chat-wave">
-        <Wave />
+					<Wave active={loading} />
       </div>
 
       <div className="chat-day">
