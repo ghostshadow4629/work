@@ -527,14 +527,33 @@ setMessages((old) => [
                       : "assistant-bubble"
                   }
                 >
-                  <p
-                    style={{
-                      whiteSpace:
-                        "pre-wrap"
-                    }}
-                  >
-                    {message.content}
-                  </p>
+<div className="message-content-row">
+  <p
+    style={{
+      whiteSpace: "pre-wrap"
+    }}
+  >
+    {message.content}
+  </p>
+
+  {message.role === "assistant" &&
+    index !== 0 && (
+      <button
+        className="tts-button"
+        type="button"
+        onClick={() =>
+          speakMessage(message.content)
+        }
+        title="Read aloud"
+        aria-label="Read this message aloud"
+      >
+        <Icon
+          name="volume"
+          size={17}
+        />
+      </button>
+    )}
+</div>
 
                   <div className="message-meta">
                     <span>
