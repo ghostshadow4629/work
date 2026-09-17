@@ -245,6 +245,30 @@ function ChatPage() {
           "Hey Alex 👋 I'm your AI Tutor. Ask me anything about Python, Math, coding, or your studies."
       }
     ]);
+    
+    const speakMessage = (text) => {
+  if (!("speechSynthesis" in window)) {
+    alert(
+      "Text-to-speech is not supported on this device or browser."
+    );
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const cleanText = text
+    .replace(/```[\s\S]*?```/g, "Code block omitted.")
+    .replace(/[*_#>`]/g, "");
+
+  const utterance =
+    new SpeechSynthesisUtterance(cleanText);
+
+  utterance.rate = 1;
+  utterance.pitch = 1;
+  utterance.volume = 1;
+
+  window.speechSynthesis.speak(utterance);
+};
 
   const [input, setInput] =
     useState("");
