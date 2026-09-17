@@ -63,13 +63,7 @@ function Icon({ name, size = 22 }) {
 
     mic: (
       <>
-        <rect
-          x="9"
-          y="3"
-          width="6"
-          height="11"
-          rx="3"
-        />
+        <rect x="9" y="3" width="6" height="11" rx="3" />
         <path d="M5 10a7 7 0 0 0 14 0" />
         <path d="M12 17v4M8 21h8" />
       </>
@@ -100,13 +94,7 @@ function Icon({ name, size = 22 }) {
 
     copy: (
       <>
-        <rect
-          x="8"
-          y="8"
-          width="11"
-          height="12"
-          rx="2"
-        />
+        <rect x="8" y="8" width="11" height="12" rx="2" />
         <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2" />
       </>
     ),
@@ -147,11 +135,15 @@ function Icon({ name, size = 22 }) {
   );
 }
 
-function Wave({ active = false }) {
-  const bars = 55;
+function Wave({ active = false, small = false }) {
+  const bars = small ? 18 : 55;
 
   return (
-    <div className={`wave ${active ? "wave-active" : ""}`}>
+    <div
+      className={`wave ${small ? "wave-small" : ""} ${
+        active ? "wave-active" : ""
+      }`}
+    >
       {Array.from({ length: bars }).map((_, index) => (
         <span
           key={index}
@@ -165,10 +157,45 @@ function Wave({ active = false }) {
   );
 }
 
-function LeftRail({
-  active,
-  setActive
-}) {
+function cleanTextForSpeech(text) {
+  return String(text)
+    .replace(/```[\s\S]*?```/g, "Code block omitted.")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[*_#>`~]/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function speakText(text, voice) {
+  if (!("speechSynthesis" in window)) {
+    return;
+  }
+
+  const cleanText = cleanTextForSpeech(text);
+
+  if (!cleanText) {
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(
+    cleanText
+  );
+
+  if (voice) {
+    utterance.voice = voice;
+    utterance.lang = voice.lang;
+  }
+
+  utterance.rate = 1;
+  utterance.pitch = 1;
+  utterance.volume = 1;
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function LeftRail({ active, setActive }) {
   const items = [
     ["chat", "Chat"],
     ["code", "Python"],
@@ -192,34 +219,23 @@ function LeftRail({
       </div>
 
       <nav className="rail-nav">
-        {items.map(
-          ([icon, label]) => (
-            <button
-              key={label}
-              className={`rail-item ${
-                active === label
-                  ? "active"
-                  : ""
-              }`}
-              onClick={() =>
-                setActive(label)
-              }
-            >
-              <Icon
-                name={icon}
-                size={21}
-              />
-              <span>{label}</span>
-            </button>
-          )
-        )}
+        {items.map(([icon, label]) => (
+          <button
+            key={label}
+            className={`rail-item ${
+              active === label ? "active" : ""
+            }`}
+            onClick={() => setActive(label)}
+          >
+            <Icon name={icon} size={21} />
+            <span>{label}</span>
+          </button>
+        ))}
       </nav>
 
       <div className="rail-bottom">
         <div className="rail-user">
-          <div className="avatar">
-            A
-          </div>
+          <div className="avatar">A</div>
 
           <div>
             <strong>Alex</strong>
@@ -236,80 +252,81 @@ function LeftRail({
   );
 }
 
-function cleanTextForSpeech(text) {
-  return String(text)
-    .replace(/```[\s\S]*?```/g, "Code block omitted.")
-    .replace(/[*_#>`~]/g, "")
-    .replace(/$begin:math:display$\(\[\^$end:math:display$]+)\]$begin:math:text$\[\^\)\]\+$end:math:text$/g, "$1")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-}
-
-function speakText(text, voice) {
-  if (!("speechSynthesis" in window)) {
-    return;
-  }
-
-  const cleanText = cleanTextForSpeech(text);
-
-  if (!cleanText) {
-    return;
-  }
-
-  window.speechSynthesis.cancel();
-
-  const utterance = new SpeechSynthesisUtterance(cleanText);
-
-  if (voice) {
-    utterance.voice = voice;
-  }
-
-  utterance.rate = 1;
-  utterance.pitch = 1;
-  utterance.volume = 1;
-
-  window.speechSynthesis.speak(utterance);
-}
-
 function ChatPage() {
-  const [messages, setMessages] =
-    useState([
-      {
-        role: "assistant",
-        content:
-          "Hey Alex 👋 I'm your AI Tutor. Ask me anything about Python, Math, coding, or your studies."
-      }
-    ]);
-    
-    const speakMessage = (text) => {
-  if (!("speechSynthesis" in window)) {
-    alert(
-      "Text-to-speech is not supported on this device or browser."
-    );
-    return;
-  }
+  const [messages, setMessages] = useState([
+    {
+      role: "assistant",
+      content:
+        "Hey Alex 👋 I'm your AI Tutor. Ask me anything about Python, Math, coding, or your studies."
+    }
+  ]);
 
-  window.speechSynthesis.cancel();
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const cleanText = text
-    .replace(/```[\s\S]*?```/g, "Code block omitted.")
-    .replace(/[*_#>`]/g, "");
-
-  const utterance =
-    new SpeechSynthesisUtterance(cleanText);
-
-  utterance.rate = 1;
-  utterance.pitch = 1;
-  utterance.volume = 1;
-
-  window.speechSynthesis.speak(utterance);
-};
-
-  const [input, setInput] =
+  const [voices, setVoices] = useState([]);
+  const [selectedVoiceName, setSelectedVoiceName] =
     useState("");
 
-  const [loading, setLoading] =
-    useState(false);
+  useEffect(() => {
+    if (!("speechSynthesis" in window)) {
+      return;
+    }
+
+    const loadVoices = () => {
+      const available =
+        window.speechSynthesis.getVoices();
+
+      setVoices(available);
+
+      if (
+        available.length > 0 &&
+        !selectedVoiceName
+      ) {
+        const preferred =
+          available.find((voice) =>
+            /^en-AU/i.test(voice.lang)
+          ) ||
+          available.find((voice) =>
+            /^en-GB/i.test(voice.lang)
+          ) ||
+          available.find((voice) =>
+            /^en-US/i.test(voice.lang)
+          ) ||
+          available.find((voice) =>
+            /^en/i.test(voice.lang)
+          ) ||
+          available[0];
+
+        setSelectedVoiceName(
+          preferred.voiceURI ||
+            `${preferred.name}-${preferred.lang}`
+        );
+      }
+    };
+
+    loadVoices();
+
+    window.speechSynthesis.onvoiceschanged =
+      loadVoices;
+
+    return () => {
+      window.speechSynthesis.onvoiceschanged =
+        null;
+    };
+  }, [selectedVoiceName]);
+
+  const selectedVoice =
+    voices.find(
+      (voice) =>
+        (voice.voiceURI ||
+          `${voice.name}-${voice.lang}`) ===
+        selectedVoiceName
+    ) || null;
+
+  const speakMessage = (text) => {
+    speakText(text, selectedVoice);
+  };
 
   const suggestions = [
     "Explain Python lists",
@@ -335,35 +352,25 @@ function ChatPage() {
     setInput("");
     setLoading(true);
 
-    const controller =
-      new AbortController();
+    const controller = new AbortController();
 
     const timeout = setTimeout(() => {
       controller.abort();
     }, 90000);
 
     try {
-      const response = await fetch(
-        "/api/chat",
-        {
-          method: "POST",
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          question: text
+        }),
+        signal: controller.signal
+      });
 
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body: JSON.stringify({
-            question: text
-          }),
-
-          signal:
-            controller.signal
-        }
-      );
-
-      const raw =
-        await response.text();
+      const raw = await response.text();
 
       console.log(
         "Backend HTTP status:",
@@ -379,10 +386,9 @@ function ChatPage() {
         let errorData = null;
 
         try {
-          errorData =
-            JSON.parse(raw);
+          errorData = JSON.parse(raw);
         } catch {
-          // Not JSON
+          // Not JSON.
         }
 
         throw new Error(
@@ -403,57 +409,52 @@ function ChatPage() {
       let data;
 
       try {
-        data =
-          JSON.parse(raw);
+        data = JSON.parse(raw);
       } catch {
         throw new Error(
           `Server returned invalid JSON: ${raw}`
         );
       }
 
-const answer =
-  typeof data?.answer === "string"
-    ? data.answer
-    : data?.choices?.[0]?.message?.content;
+      const answer =
+        typeof data?.answer === "string"
+          ? data.answer
+          : data?.choices?.[0]?.message?.content;
 
-if (!answer) {
-  throw new Error(
-    "The AI response did not contain an answer."
-  );
-}
+      if (!answer) {
+        throw new Error(
+          "The AI response did not contain an answer."
+        );
+      }
 
-setMessages((old) => [
-  ...old,
-  {
-    role: "assistant",
-    content: answer
-  }
-]);
+      setMessages((old) => [
+        ...old,
+        {
+          role: "assistant",
+          content: answer
+        }
+      ]);
 
+      // Automatically speak the new AI response.
+      setTimeout(() => {
+        speakMessage(answer);
+      }, 100);
     } catch (error) {
-      console.error(
-        "Chat error:",
-        error
-      );
+      console.error("Chat error:", error);
 
       let message;
 
-      if (
-        error?.name ===
-        "AbortError"
-      ) {
+      if (error?.name === "AbortError") {
         message =
           "The AI took longer than 90 seconds to respond. Please try again.";
       } else {
         message =
           "Sorry, I couldn't reach the AI.\n\n" +
           `ERROR: ${
-            error?.name ||
-            "Unknown"
+            error?.name || "Unknown"
           }\n` +
           `MESSAGE: ${
-            error?.message ||
-            "No error message"
+            error?.message || "No error message"
           }`;
       }
 
@@ -470,10 +471,14 @@ setMessages((old) => [
     }
   };
 
-  const useSuggestion = (
-    text
-  ) => {
+  const useSuggestion = (text) => {
     setInput(text);
+  };
+
+  const stopSpeaking = () => {
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
   };
 
   return (
@@ -497,19 +502,51 @@ setMessages((old) => [
         <div className="chat-header-actions">
           <button
             className="icon-button"
-            title="Sound"
+            title="Stop speaking"
+            onClick={stopSpeaking}
           >
-            <Icon
-              name="volume"
-              size={19}
-            />
+            <Icon name="volume" size={19} />
           </button>
 
+          {voices.length > 0 && (
+            <select
+              className="voice-select"
+              value={selectedVoiceName}
+              onChange={(event) => {
+                stopSpeaking();
+                setSelectedVoiceName(
+                  event.target.value
+                );
+              }}
+              title="Choose AI voice"
+              aria-label="Choose AI voice"
+            >
+              {voices
+                .filter((voice) =>
+                  /^en/i.test(voice.lang)
+                )
+                .map((voice) => {
+                  const value =
+                    voice.voiceURI ||
+                    `${voice.name}-${voice.lang}`;
+
+                  return (
+                    <option
+                      key={value}
+                      value={value}
+                    >
+                      {voice.name}
+                      {voice.lang
+                        ? ` (${voice.lang})`
+                        : ""}
+                    </option>
+                  );
+                })}
+            </select>
+          )}
+
           <button className="personality-button">
-            <Icon
-              name="person"
-              size={18}
-            />
+            <Icon name="person" size={18} />
             Change Personality
           </button>
 
@@ -517,16 +554,13 @@ setMessages((old) => [
             className="icon-button"
             title="More"
           >
-            <Icon
-              name="more"
-              size={20}
-            />
+            <Icon name="more" size={20} />
           </button>
         </div>
       </header>
 
       <div className="chat-wave">
-					<Wave active={loading} />
+        <Wave active={loading} />
       </div>
 
       <div className="chat-day">
@@ -534,106 +568,105 @@ setMessages((old) => [
       </div>
 
       <div className="messages">
-        {messages.map(
-          (message, index) => (
-            <React.Fragment
-              key={index}
+        {messages.map((message, index) => (
+          <React.Fragment key={index}>
+            <div
+              className={
+                message.role === "user"
+                  ? "message-row user-row"
+                  : "message-row assistant-row"
+              }
             >
+              {message.role === "assistant" && (
+                <div className="message-avatar">
+                  <Wave small />
+                </div>
+              )}
+
               <div
                 className={
-                  message.role ===
-                  "user"
-                    ? "message-row user-row"
-                    : "message-row assistant-row"
+                  message.role === "user"
+                    ? "user-bubble"
+                    : "assistant-bubble"
                 }
               >
-                {message.role ===
-                  "assistant" && (
-                  <div className="message-avatar">
-                    <Wave small />
-                  </div>
-                )}
-
-                <div
-                  className={
-                    message.role ===
-                    "user"
-                      ? "user-bubble"
-                      : "assistant-bubble"
-                  }
-                >
-<div className="message-content-row">
-  <p
-    style={{
-      whiteSpace: "pre-wrap"
-    }}
-  >
-    {message.content}
-  </p>
-
-  {message.role === "assistant" &&
-    index !== 0 && (
-      <button
-        className="tts-button"
-        type="button"
-        onClick={() =>
-          speakMessage(message.content)
-        }
-        title="Read aloud"
-        aria-label="Read this message aloud"
-      >
-        <Icon
-          name="volume"
-          size={17}
-        />
-      </button>
-    )}
-</div>
-
-                  <div className="message-meta">
-                    <span>
-                      Now
-                    </span>
-
-                    {message.role ===
-                      "user" && (
-                      <span className="checks">
-                        ✓✓
-                      </span>
-                    )}
-                  </div>
+                <div className="message-content-row">
+                  <p
+                    style={{
+                      whiteSpace: "pre-wrap"
+                    }}
+                  >
+                    {message.content}
+                  </p>
 
                   {message.role ===
-                    "assistant" &&
-                    index !== 0 && (
-                      <div className="message-tools">
-                        <button>
-                          <Icon
-                            name="copy"
-                            size={16}
-                          />
-                        </button>
-
-                        <button>
-                          <Icon
-                            name="like"
-                            size={16}
-                          />
-                        </button>
-
-                        <button>
-                          <Icon
-                            name="dislike"
-                            size={16}
-                          />
-                        </button>
-                      </div>
-                    )}
+                    "assistant" && (
+                    <button
+                      className="tts-button"
+                      type="button"
+                      onClick={() =>
+                        speakMessage(
+                          message.content
+                        )
+                      }
+                      title="Read this message aloud"
+                      aria-label="Read this message aloud"
+                    >
+                      <Icon
+                        name="volume"
+                        size={17}
+                      />
+                    </button>
+                  )}
                 </div>
+
+                <div className="message-meta">
+                  <span>Now</span>
+
+                  {message.role === "user" && (
+                    <span className="checks">
+                      ✓✓
+                    </span>
+                  )}
+                </div>
+
+                {message.role ===
+                  "assistant" &&
+                  index !== 0 && (
+                    <div className="message-tools">
+                      <button
+                        title="Copy"
+                        onClick={() =>
+                          navigator.clipboard?.writeText(
+                            message.content
+                          )
+                        }
+                      >
+                        <Icon
+                          name="copy"
+                          size={16}
+                        />
+                      </button>
+
+                      <button title="Like">
+                        <Icon
+                          name="like"
+                          size={16}
+                        />
+                      </button>
+
+                      <button title="Dislike">
+                        <Icon
+                          name="dislike"
+                          size={16}
+                        />
+                      </button>
+                    </div>
+                  )}
               </div>
-            </React.Fragment>
-          )
-        )}
+            </div>
+          </React.Fragment>
+        ))}
 
         {loading && (
           <div className="message-row assistant-row">
@@ -642,14 +675,10 @@ setMessages((old) => [
             </div>
 
             <div className="assistant-bubble">
-              <p>
-                Thinking...
-              </p>
+              <p>Thinking...</p>
 
               <div className="message-meta">
-                <span>
-                  AI Tutor
-                </span>
+                <span>AI Tutor</span>
               </div>
             </div>
           </div>
@@ -657,73 +686,62 @@ setMessages((old) => [
       </div>
 
       <div className="suggestions">
-        {suggestions.map(
-          (suggestion) => (
-            <button
-              key={suggestion}
-              onClick={() =>
-                useSuggestion(
-                  suggestion
-                )
-              }
-              disabled={loading}
-            >
-              {suggestion}
-              <span>→</span>
-            </button>
-          )
-        )}
+        {suggestions.map((suggestion) => (
+          <button
+            key={suggestion}
+            onClick={() =>
+              useSuggestion(suggestion)
+            }
+            disabled={loading}
+          >
+            {suggestion}
+            <span>→</span>
+          </button>
+        ))}
       </div>
 
       <div className="composer-wrap">
         <div className="composer">
           <textarea
-  value={input}
-  onChange={(e) =>
-    setInput(e.target.value)
-  }
-  onKeyDown={(e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-    // Shift + Enter = newline
-  }}
-  placeholder={
-    loading
-      ? "AI Tutor is thinking..."
-      : "Ask anything..."
-  }
-  disabled={loading}
-  rows={1}
-/>
+            value={input}
+            onChange={(event) =>
+              setInput(event.target.value)
+            }
+            onKeyDown={(event) => {
+              if (
+                event.key === "Enter" &&
+                !event.shiftKey
+              ) {
+                event.preventDefault();
+                sendMessage();
+              }
+            }}
+            placeholder={
+              loading
+                ? "AI Tutor is thinking..."
+                : "Ask anything..."
+            }
+            disabled={loading}
+            rows={1}
+          />
 
           <button
             className="mic-button"
             title="Voice input"
             disabled={loading}
           >
-            <Icon
-              name="mic"
-              size={20}
-            />
+            <Icon name="mic" size={20} />
           </button>
 
           <button
             className="send-button"
-            onClick={
-              sendMessage
-            }
+            onClick={sendMessage}
             title="Send"
             disabled={
-              loading ||
-              !input.trim()
+              loading || !input.trim()
             }
           >
-            <Icon
-              name="send"
-              size={21}
-            />
+            <Icon name="send" size={21} />
           </button>
         </div>
 
@@ -736,8 +754,7 @@ setMessages((old) => [
 }
 
 function PythonPage() {
-  const [output, setOutput] =
-    useState("");
+  const [output, setOutput] = useState("");
 
   const runCode = () => {
     setOutput("120");
@@ -747,21 +764,12 @@ function PythonPage() {
     <section className="python-page">
       <header className="page-header">
         <div>
-          <h1>
-            Python Mode
-          </h1>
-
-          <span>
-            Learn, experiment
-            &amp; build
-          </span>
+          <h1>Python Mode</h1>
+          <span>Learn, experiment &amp; build</span>
         </div>
 
         <button className="small-action">
-          <Icon
-            name="more"
-            size={20}
-          />
+          <Icon name="more" size={20} />
         </button>
       </header>
 
@@ -772,15 +780,12 @@ function PythonPage() {
             main.py
           </span>
 
-          <b>
-            Python 3
-          </b>
+          <b>Python 3</b>
         </div>
 
         <div className="code-area">
           <div>
             <em>1</em>
-
             <span className="pink">
               def factorial
             </span>
@@ -790,42 +795,28 @@ function PythonPage() {
           <div>
             <em>2</em>
             &nbsp;&nbsp;&nbsp;&nbsp;
-
-            <span className="pink">
-              if
-            </span>{" "}
+            <span className="pink">if</span>{" "}
             n == 0:
           </div>
 
           <div>
             <em>3</em>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-            <span className="green">
-              return
-            </span>{" "}
+            <span className="green">return</span>{" "}
             1
           </div>
 
           <div>
             <em>4</em>
             &nbsp;&nbsp;&nbsp;&nbsp;
-
-            <span className="pink">
-              else
-            </span>
-            :
+            <span className="pink">else</span>:
           </div>
 
           <div>
             <em>5</em>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-            <span className="green">
-              return
-            </span>{" "}
-            n *
-            factorial(n-1)
+            <span className="green">return</span>{" "}
+            n * factorial(n-1)
           </div>
 
           <div>
@@ -834,20 +825,12 @@ function PythonPage() {
 
           <div>
             <em>7</em>
-
-            n ={" "}
-
-            <span className="orange">
-              5
-            </span>
+            n = <span className="orange">5</span>
           </div>
 
           <div>
             <em>8</em>
-
-            <span className="yellow">
-              print
-            </span>
+            <span className="yellow">print</span>
             (factorial(n))
           </div>
         </div>
@@ -863,88 +846,65 @@ function PythonPage() {
 
         <button
           className="reset-button"
-          onClick={() =>
-            setOutput("")
-          }
+          onClick={() => setOutput("")}
         >
           Reset
         </button>
       </div>
 
       <div className="output-card">
-        <span>
-          Output
-        </span>
+        <span>Output</span>
 
-        <strong>
-          {output || "—"}
-        </strong>
+        <strong>{output || "—"}</strong>
 
         {output && (
           <div className="output-success">
-            <Icon
-              name="check"
-              size={19}
-            />
+            <Icon name="check" size={19} />
           </div>
         )}
       </div>
 
       <div className="insight-card">
         <div className="insight-icon">
-          <Icon
-            name="lightbulb"
-            size={25}
-          />
+          <Icon name="lightbulb" size={25} />
         </div>
 
         <div>
-          <h3>
-            AI Insight
-          </h3>
+          <h3>AI Insight</h3>
 
           <p>
-            Recursion solves a
-            problem by calling the
-            same function with a
-            smaller input until it
-            reaches a base case.
+            Recursion solves a problem by
+            calling the same function with a
+            smaller input until it reaches a
+            base case.
           </p>
 
-          <span>
-            Concept: Recursion
-          </span>
+          <span>Concept: Recursion</span>
         </div>
       </div>
     </section>
   );
 }
 
-function PlaceholderPage({
-  title,
-  icon
-}) {
+function PlaceholderPage({ title, icon }) {
   return (
     <section className="placeholder-page">
       <div className="placeholder-icon">
         {icon}
       </div>
 
-      <h1>
-        {title}
-      </h1>
+      <h1>{title}</h1>
 
       <p>
-        This section is ready
-        for the next feature.
+        This section is ready for the next
+        feature.
       </p>
     </section>
   );
 }
 
 export default function App() {
-  const [active, setActive] =
-    useState("Chat");
+  const [active, setActive] = useState("Chat");
 
   const renderContent = () => {
     switch (active) {
