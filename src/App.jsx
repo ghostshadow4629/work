@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 
 function Icon({ name, size = 22 }) {
@@ -234,6 +234,41 @@ function LeftRail({
       </div>
     </aside>
   );
+}
+
+function cleanTextForSpeech(text) {
+  return String(text)
+    .replace(/```[\s\S]*?```/g, "Code block omitted.")
+    .replace(/[*_#>`~]/g, "")
+    .replace(/$begin:math:display$\(\[\^$end:math:display$]+)\]$begin:math:text$\[\^\)\]\+$end:math:text$/g, "$1")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function speakText(text, voice) {
+  if (!("speechSynthesis" in window)) {
+    return;
+  }
+
+  const cleanText = cleanTextForSpeech(text);
+
+  if (!cleanText) {
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(cleanText);
+
+  if (voice) {
+    utterance.voice = voice;
+  }
+
+  utterance.rate = 1;
+  utterance.pitch = 1;
+  utterance.volume = 1;
+
+  window.speechSynthesis.speak(utterance);
 }
 
 function ChatPage() {
