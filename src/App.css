@@ -1101,3 +1101,51 @@ button {
     transform: scaleY(0.8);
   }
 }
+
+/* =========================
+   TEXT TO SPEECH
+   ========================= */
+
+.message-content-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.message-content-row p {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.tts-button {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(140, 100, 255, 0.25);
+  border-radius: 10px;
+  background: rgba(100, 70, 200, 0.12);
+  color: #d8ceff;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.tts-button:hover {
+  background: rgba(120, 80, 240, 0.22);
+  border-color: rgba(160, 120, 255, 0.45);
+  transform: translateY(-1px);
+}
+
+.tts-button:active {
+  transform: scale(0.94);
+}
+
+.tts-button svg {
+  pointer-events: none;
+}
