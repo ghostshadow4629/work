@@ -22,7 +22,9 @@ body {
 }
 
 button,
-input {
+input,
+textarea,
+select {
   font: inherit;
 }
 
@@ -118,8 +120,7 @@ button {
   align-items: center;
   justify-content: center;
   gap: 5px;
-  transition:
-    0.2s ease;
+  transition: 0.2s ease;
 }
 
 .rail-item span {
@@ -334,6 +335,41 @@ button {
   font-size: 11px;
 }
 
+/* =========================
+   VOICE SELECTOR
+========================= */
+
+.voice-select {
+  height: 38px;
+  max-width: 210px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 11px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.035);
+  color: #aaa6b9;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.voice-select:hover {
+  border-color: rgba(155, 99, 255, 0.35);
+  background: rgba(145, 86, 255, 0.09);
+}
+
+.voice-select:focus {
+  border-color: rgba(155, 99, 255, 0.45);
+}
+
+.voice-select option {
+  background: #10101b;
+  color: #eeeaf8;
+}
+
+/* =========================
+   WAVE
+========================= */
+
 .chat-wave {
   height: 58px;
   margin: 10px 0 3px;
@@ -342,48 +378,98 @@ button {
   justify-content: center;
   opacity: 0.75;
   overflow: hidden;
-  mask-image: linear-gradient(
-    90deg,
-    transparent,
-    black 12%,
-    black 88%,
-    transparent
-  );
+  mask-image:
+    linear-gradient(
+      90deg,
+      transparent,
+      black 12%,
+      black 88%,
+      transparent
+    );
 }
 
 .wave {
-  height: 48px;
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 3px;
+  min-height: 64px;
+  padding: 10px 20px;
   overflow: hidden;
 }
 
-.wave span {
+.wave-bar {
   width: 3px;
-  min-height: 3px;
-  max-height: 40px;
-  border-radius: 5px;
-  background: linear-gradient(
-    180deg,
-    #bd8bff,
-    #6940d8
-  );
-  box-shadow:
-    0 0 8px rgba(139, 83, 255, 0.25);
+  height: 12px;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      to top,
+      #6d4aff,
+      #9d7cff
+    );
+  transform-origin: center;
+  animation:
+    wave-idle 2s ease-in-out infinite;
+  animation-delay:
+    calc(var(--wave-index) * -0.035s);
+}
+
+.wave.wave-active .wave-bar {
+  animation-name: wave-thinking;
+  animation-duration: 0.65s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
 
 .wave-small {
   width: 34px;
+  min-height: 20px;
   height: 20px;
+  padding: 0;
   gap: 2px;
 }
 
-.wave-small span {
+.wave-small .wave-bar {
   width: 2px;
-  max-height: 13px;
+  height: 8px;
+}
+
+@keyframes wave-idle {
+  0%,
+  100% {
+    transform: scaleY(0.7);
+  }
+
+  50% {
+    transform: scaleY(1.1);
+  }
+}
+
+@keyframes wave-thinking {
+  0%,
+  100% {
+    transform: scaleY(0.45);
+  }
+
+  25% {
+    transform: scaleY(1.8);
+  }
+
+  50% {
+    transform: scaleY(0.75);
+  }
+
+  75% {
+    transform: scaleY(1.45);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-bar {
+    animation: none;
+    transform: scaleY(0.8);
+  }
 }
 
 .chat-day {
@@ -395,6 +481,10 @@ button {
   background: rgba(255, 255, 255, 0.035);
   font-size: 9px;
 }
+
+/* =========================
+   MESSAGES
+========================= */
 
 .messages {
   flex: 1;
@@ -473,6 +563,18 @@ button {
   white-space: pre-wrap;
 }
 
+.message-content-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.message-content-row p {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
 .message-meta {
   margin-top: 8px;
   display: flex;
@@ -511,6 +613,42 @@ button {
 .message-tools button:hover {
   color: #b996ff;
   background: rgba(255, 255, 255, 0.04);
+}
+
+/* =========================
+   TTS BUTTON
+========================= */
+
+.tts-button {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(140, 100, 255, 0.25);
+  border-radius: 10px;
+  background: rgba(100, 70, 200, 0.12);
+  color: #d8ceff;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.tts-button:hover {
+  background: rgba(120, 80, 240, 0.22);
+  border-color: rgba(160, 120, 255, 0.45);
+  transform: translateY(-1px);
+}
+
+.tts-button:active {
+  transform: scale(0.94);
+}
+
+.tts-button svg {
+  pointer-events: none;
 }
 
 /* =========================
@@ -775,11 +913,12 @@ button {
 .run-button {
   border: 0;
   color: white;
-  background: linear-gradient(
-    135deg,
-    #7946e5,
-    #5b35bb
-  );
+  background:
+    linear-gradient(
+      135deg,
+      #7946e5,
+      #5b35bb
+    );
 }
 
 .reset-button {
@@ -887,7 +1026,7 @@ button {
 }
 
 /* =========================
-   MOBILE / MIMO PREVIEW
+   MOBILE
 ========================= */
 
 @media (max-width: 800px) {
@@ -938,6 +1077,11 @@ button {
 
   .personality-button {
     padding: 0 9px;
+    font-size: 9px;
+  }
+
+  .voice-select {
+    max-width: 150px;
     font-size: 9px;
   }
 
@@ -1017,6 +1161,13 @@ button {
     height: 34px;
   }
 
+  .voice-select {
+    width: 34px;
+    max-width: 34px;
+    padding: 0;
+    color: transparent;
+  }
+
   .assistant-bubble,
   .user-bubble {
     max-width: 90%;
@@ -1026,126 +1177,13 @@ button {
   .suggestions button {
     font-size: 9px;
   }
-}
 
-/* =========================
-   AI WAVE
-   ========================= */
-
-.wave {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  min-height: 64px;
-  padding: 10px 20px;
-  overflow: hidden;
-}
-
-.wave-bar {
-  width: 3px;
-  height: 12px;
-  border-radius: 999px;
-  background: linear-gradient(
-    to top,
-    #6d4aff,
-    #9d7cff
-  );
-
-  transform-origin: center;
-  animation: wave-idle 2s ease-in-out infinite;
-  animation-delay: calc(var(--wave-index) * -0.035s);
-}
-
-/* Active while AI is thinking */
-.wave.wave-active .wave-bar {
-  animation-name: wave-thinking;
-  animation-duration: 0.65s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-}
-
-@keyframes wave-idle {
-  0%,
-  100% {
-    transform: scaleY(0.7);
+  .message-content-row {
+    gap: 7px;
   }
 
-  50% {
-    transform: scaleY(1.1);
+  .tts-button {
+    width: 31px;
+    height: 31px;
   }
-}
-
-@keyframes wave-thinking {
-  0%,
-  100% {
-    transform: scaleY(0.45);
-  }
-
-  25% {
-    transform: scaleY(1.8);
-  }
-
-  50% {
-    transform: scaleY(0.75);
-  }
-
-  75% {
-    transform: scaleY(1.45);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wave-bar {
-    animation: none;
-    transform: scaleY(0.8);
-  }
-}
-
-/* =========================
-   TEXT TO SPEECH
-   ========================= */
-
-.message-content-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.message-content-row p {
-  flex: 1;
-  min-width: 0;
-  margin: 0;
-}
-
-.tts-button {
-  flex: 0 0 auto;
-  width: 34px;
-  height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(140, 100, 255, 0.25);
-  border-radius: 10px;
-  background: rgba(100, 70, 200, 0.12);
-  color: #d8ceff;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.tts-button:hover {
-  background: rgba(120, 80, 240, 0.22);
-  border-color: rgba(160, 120, 255, 0.45);
-  transform: translateY(-1px);
-}
-
-.tts-button:active {
-  transform: scale(0.94);
-}
-
-.tts-button svg {
-  pointer-events: none;
 }
